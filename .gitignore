@@ -3,3 +3,7 @@ __pycache__/
 .ipynb_checkpoints/
 *.pyc
 code_demos/
+gitignore_materials/
+AI at a Glance Chapter notes.pdf
+*.pdf
+!ai-for-business.pdf

@@ -40,6 +40,29 @@ Graph RAG is the right choice when the relationships in your data are first-clas
 
 The two notebooks that follow put these ideas into practice. The first notebook, **DBMS_RAG_SQLite**, builds a SQLite database from the classic Supplier-Parts schema, extracts schema context, generates SQL from natural-language questions, and compares grounded answers against ungrounded LLM responses. The second notebook, **GRAPH_RAG_Trade**, constructs a Kuzu graph database from international trade data, generates Cypher queries, and visualizes the retrieved subgraphs to help you verify the LLM's answers. Together, they demonstrate that RAG is a general-purpose architecture whose retrieval mechanism can be adapted to whatever data source holds the evidence your application needs.
 
+For a related approach, see [RAG with Images and Video](../06-rag-multimedia/intro.md).
+
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- DBMS RAG uses a two-phase retrieval process: first retrieve the database schema to generate SQL, then execute the SQL and feed query results to the LLM for grounded answer generation.
+- For structured, numeric, analytical questions, DBMS RAG produces exact answers via the database engine — unlike document RAG, which would rely on the LLM to aggregate numbers from retrieved text chunks.
+- Graph RAG replaces SQL with Cypher queries against a graph database, making it natural to answer multi-hop relationship questions (e.g., "countries that exported to both the USA and China") that would require complex self-joins in SQL.
+- Entity name mismatches (e.g., "USA" vs. "United States") are a common failure mode in both DBMS and Graph RAG, since the LLM must correctly map user terms to database identifiers.
+- The retrieve-augment-generate pattern is universal: the only thing that changes across document RAG, DBMS RAG, and Graph RAG is the retrieval mechanism — vector similarity, SQL execution, or Cypher traversal.
+:::
+
+## Exercises
+
+**Easy:** Using the DBMS RAG notebook, ask a natural-language question that requires a SQL JOIN between two tables. Inspect the generated SQL to verify it correctly joins the tables, and compare the grounded answer to what the LLM produces without database context.
+
+**Easy:** Explain why DBMS RAG requires two LLM calls while document RAG requires only one. What role does each call play in the pipeline?
+
+**Medium:** In the Graph RAG notebook, test a query where the user uses a common name for a country (e.g., "USA") that differs from the database identifier (e.g., "United States"). Document the failure, then modify the system prompt to include a mapping of common aliases to database identifiers. Re-run the query and compare results.
+
+**Challenge:** Design a hybrid RAG system for a retail company that needs to answer questions about both product descriptions (unstructured text in PDFs) and sales data (structured tables in a SQL database). Specify which retrieval mechanism handles each data type, how the system decides which backend to query for a given user question, and how the results are combined into a single prompt for the LLM.
+
 ## References
 
 - Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Kuttler, H., Lewis, M., Yih, W., Rocktaschel, T., Riedel, S., & Kiela, D. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. *Advances in Neural Information Processing Systems*, 33.

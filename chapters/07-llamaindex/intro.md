@@ -22,6 +22,25 @@ If you compare a LlamaIndex pipeline to the from-scratch RAG you built in earlie
 
 The notebook that follows this introduction demonstrates LlamaIndex using three sets of fictional company documents: Acme Analytics, Globex Cybersecurity, and Nextera Green Solutions. These companies are entirely synthetic, meaning the LLM has never encountered them in training. Any correct answer must come from RAG retrieval, not from the model's parametric memory. You will load all three document sets using `SimpleDirectoryReader`, build a unified vector index, and query across companies to see how LlamaIndex automatically surfaces the right documents regardless of which company the question concerns. The notebook also includes a commented-out example using the GitHub data loader from LlamaHub, so you can see how easily one data source can be swapped for another.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- LlamaIndex provides an opinionated, batteries-included framework that reduces a full RAG pipeline to just a few lines of code using `SimpleDirectoryReader`, `VectorStoreIndex`, and `query_engine`.
+- The `Settings` object centralizes LLM and embedding model configuration so that all downstream components inherit the same choices automatically.
+- LlamaHub offers 300+ data connectors that are drop-in replacements for `SimpleDirectoryReader`, enabling the same RAG pattern across local files, cloud storage, wikis, and databases.
+:::
+
+## Exercises
+
+**Easy:** Load a set of plain-text documents with `SimpleDirectoryReader`, build a `VectorStoreIndex`, and use the query engine to ask three factual questions. Verify that the answers come from the documents, not the LLM's parametric memory.
+
+**Medium:** Override LlamaIndex's default chunking behavior by configuring a custom `SentenceSplitter` with a different chunk size and overlap. Compare the retrieval quality of the default settings versus your custom settings on the same set of questions.
+
+**Challenge:** Swap `SimpleDirectoryReader` for a LlamaHub connector (e.g., `GithubRepositoryReader` or `GoogleDriveReader`). Build a RAG pipeline over a non-local data source and document what changes in the code versus what stays the same.
+
+For a comparison of LlamaIndex's opinionated defaults with a more modular, compose-your-own-pipeline approach, see {ref}`Ch 11 LangChain <08-langchain/intro>`.
+
 ## References
 
 1. LlamaIndex Documentation. "Getting Started." LlamaIndex, 2025. [https://docs.llamaindex.ai/](https://docs.llamaindex.ai/)

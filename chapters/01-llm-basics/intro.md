@@ -48,6 +48,29 @@ The four notebooks that accompany this chapter let you work with each of these c
 
 Each notebook is self-contained and runs on Google Colab preferably with T4 GPU. Notebooks also run on CPU mode in Google Colab but may take a little longer to complete.
 
+For a related approach, see [Calling LLMs: Providers and Fallback](../02-llm-providers/intro.md).
+
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- Tokenization converts text into integer IDs using subword methods like Byte Pair Encoding; different models (LLaMA vs. GPT-2) tokenize the same sentence differently, directly affecting model behavior.
+- Embeddings map tokens to dense vectors where geometric proximity encodes semantic similarity — this is the foundation for vector databases and semantic search covered in later chapters.
+- TF-IDF remains a practical baseline for text analysis, but unlike embeddings it treats words independently and cannot capture synonyms, word order, or contextual meaning.
+- The attention mechanism allows each token to dynamically weigh every other token in the sequence, enabling context-dependent representations that distinguish "bank" (riverbank) from "bank" (financial institution).
+- The transformer architecture chains tokenization, embeddings, and multi-layer self-attention into a unified system that powers every modern LLM.
+:::
+
+## Exercises
+
+**Easy:** Using the tokenization notebook, tokenize the word "unbelievable" with both the LLaMA and GPT-2 tokenizers. How many tokens does each produce, and what are the subword pieces?
+
+**Easy:** Explain why cosine similarity between the GloVe vectors for "king" and "queen" is higher than between "king" and "bicycle." What property of embedding training causes this?
+
+**Medium:** In the TF-IDF notebook, add a new document to the corpus that contains a rare technical term. Recalculate the TF-IDF matrix and explain why that term receives a high weight. Then explain a scenario where TF-IDF would fail but semantic embeddings would succeed.
+
+**Challenge:** Modify the attention notebook's sentiment classifier to process a sentence where the sentiment-bearing word appears at the beginning rather than the end (e.g., "Terrible was the movie in every way"). Compare the attention weights to the original example and explain whether the attention mechanism successfully identifies the key word regardless of position.
+
 ## References
 
 - Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, L., & Polosukhin, I. (2017). Attention Is All You Need. *Advances in Neural Information Processing Systems*, 30.

@@ -40,6 +40,29 @@ Visual RAG opens up application areas that text-based RAG simply cannot address.
 
 The two notebooks that follow implement these ideas end to end. The first notebook, **Image RAG**, builds a synthetic product catalog, creates a CLIP embedding index, retrieves images by text query, and generates multimodal answers with Gemini. The second notebook, **Video RAG**, generates a synthetic product showcase video, extracts keyframes, indexes them with CLIP, and demonstrates temporal retrieval with timestamped answers. Together, they show that the RAG pattern generalizes naturally from text to pixels, with CLIP and multimodal LLMs providing the machinery to bridge the modality gap.
 
+For a related approach, see [RAG with LlamaIndex](../07-rag-llamaindex/intro.md).
+
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- CLIP enables visual RAG by placing images and text into a shared embedding space, allowing natural-language queries to retrieve relevant images via cosine similarity.
+- Image RAG follows the same retrieve-augment-generate pattern as document RAG: embed the image collection, embed the text query, retrieve the most similar images, and generate a grounded answer using a multimodal LLM.
+- Video RAG adds a keyframe extraction preprocessing step and pairs each frame's CLIP embedding with its timestamp, enabling temporal retrieval that answers not just "what" but "when" something appears.
+- Multimodal LLMs (Gemini, GPT-4o) do more than caption images — they reason about visual content, compare retrieved images, and synthesize observations into coherent answers grounded in visual evidence.
+- Visual RAG unlocks business applications that text-based RAG cannot address, including e-commerce product search, video archive retrieval, manufacturing defect matching, and medical imaging support.
+:::
+
+## Exercises
+
+**Easy:** Using the Image RAG notebook, submit three different text queries against the product catalog and inspect the top-3 retrieved images for each. Evaluate whether the retrieved images match the query intent and note any cases where CLIP's cross-modal matching fails.
+
+**Easy:** Explain why a single text embedding model (like the ones used in document RAG) cannot be used for image retrieval. What specific property of CLIP makes cross-modal retrieval possible?
+
+**Medium:** In the Video RAG notebook, experiment with different keyframe extraction rates (e.g., 1 frame per second vs. 1 frame every 3 seconds). Compare retrieval accuracy and note the tradeoff between temporal precision and computational cost.
+
+**Challenge:** Design an Image RAG system for a fashion e-commerce company with 500,000 product images. Specify the embedding pipeline (model choice, batch processing strategy), the vector database (justify your choice from ChromaDB, Pinecone, or Weaviate), and the multimodal LLM for answer generation. Address how you would handle queries that combine visual attributes ("red dress") with structured filters ("under $50, size medium").
+
 ## References
 
 - Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry, G., Askell, A., Mishkin, P., Clark, J., Krueger, G., & Sutskever, I. (2021). Learning Transferable Visual Models From Natural Language Supervision. *Proceedings of the 38th International Conference on Machine Learning (ICML)*.

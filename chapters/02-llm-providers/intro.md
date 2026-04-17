@@ -32,6 +32,29 @@ For students on a budget, the recommended starting point is to sign up for free-
 
 The next page provides a complete technical reference for `llm_cascade`, including installation instructions, supported providers, model overrides, and embedding generation.
 
+For a related approach, see [Local LLMs](../16-local-llms/intro.md).
+
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- The LLM provider landscape includes proprietary APIs (OpenAI, Gemini, Groq), open-source hubs (HuggingFace), unified gateways (OpenRouter), and local runners (Ollama) — each with different cost, speed, and capability profiles.
+- Relying on a single provider creates business risk from outages, rate limits, and pricing changes; production applications should always have fallback options.
+- The `llm_cascade` package provides automatic fallback across eight providers, trying each in order so that a rate-limit error on one provider transparently routes to the next.
+- For students on a budget, Gemini (500 free requests/day) and Groq (30 free requests/minute) together cover virtually all exercises in this book at zero cost.
+- API-based and local models represent a fundamental tradeoff: cloud APIs offer maximum capability with minimal setup, while local models via Ollama provide data privacy and unlimited free inference.
+:::
+
+## Exercises
+
+**Easy:** Sign up for free-tier API keys from Gemini and Groq. Configure them in a Colab notebook using `llm_cascade` and verify that `get_cascade()` detects both providers.
+
+**Easy:** Using `llm_cascade`, send the same prompt to two different providers and compare the responses. Note which provider and model handled each request by inspecting the response object.
+
+**Medium:** Simulate a provider outage by intentionally setting an invalid API key for your primary provider. Send a request through `llm_cascade` and verify that it automatically falls back to the secondary provider. Document the response object to confirm which provider handled the request.
+
+**Challenge:** Design a provider selection strategy for a company that processes 10,000 customer support queries per day. Consider cost per token, rate limits, response latency, and data privacy requirements. Recommend a primary provider, a fallback provider, and justify when Ollama should be used instead of cloud APIs.
+
 ## References
 
 1. OpenAI. "API Reference." OpenAI Platform Documentation, 2025. [https://platform.openai.com/docs/api-reference](https://platform.openai.com/docs/api-reference)

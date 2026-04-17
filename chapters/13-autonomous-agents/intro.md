@@ -46,6 +46,25 @@ Third, the agent has no memory across runs. Each invocation starts from scratch.
 
 These limitations are not flaws in the design but deliberate simplifications that make the core pattern visible. The four-phase structure of plan, execute, synthesize, and reflect is the foundation. Tools, iteration, and memory are extensions that build on that foundation, and frameworks like LangGraph provide the infrastructure to implement them as stateful graphs with conditional edges.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- Autonomous agents differ from reactive and pipeline-based agents because the LLM generates its own plan at runtime rather than following a human-designed sequence of steps.
+- The Plan-Execute-Synthesize-Reflect pattern structures autonomous workflows into four distinct cognitive phases, with the reflection phase providing built-in quality assurance through adversarial self-critique.
+- Current autonomous agents are limited by lack of real tools, absence of iterative refinement loops, and no cross-run memory --- but these are engineering extensions, not architectural changes, to the core four-phase pattern.
+:::
+
+## Exercises
+
+**Easy:** Run the `AutonomousAgent_BusinessValidator` notebook with two different business ideas (e.g., a B2B SaaS product vs. a local retail concept). Compare the research questions the planner generates and note how the plan adapts to the input.
+
+**Medium:** Add a conditional loop to the autonomous workflow: if the critic's confidence score is below 5 out of 10, feed the critique back into the planner and re-run the execution and synthesis phases. Compare the quality of the first-pass and second-pass recommendations.
+
+**Challenge:** Extend the execution phase to use a real tool (e.g., web search or a market data API) for at least one of the research questions. Compare the grounded analysis with the LLM-only analysis and assess whether tool access meaningfully changes the recommendation or confidence score.
+
+For equipping agents with deterministic tools and deploying them as reusable services via the Model Context Protocol, see {ref}`Ch 17 Tool Agents and MCP <14-tool-agents-mcp/intro>`.
+
 ## References
 
 - Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2023). ReAct: Synergizing Reasoning and Acting in Language Models. *International Conference on Learning Representations (ICLR)*.

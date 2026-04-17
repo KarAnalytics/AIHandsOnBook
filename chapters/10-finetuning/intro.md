@@ -44,6 +44,27 @@ In practice, mature organizations combine both approaches. They fine-tune a base
 
 The QLoRA notebook in this chapter provides a hands-on demonstration of the complete pipeline. It fine-tunes a small language model on fictional data about Acme Analytics --- a made-up AI-powered business intelligence company --- and presents a side-by-side comparison of model responses before and after training. Before fine-tuning, the base model either refuses to answer or confabulates when asked about Acme Analytics. After just two minutes of QLoRA training on 15 examples, the model accurately recalls the company's CEO, revenue figures, product names, and pricing. The contrast makes the power of fine-tuning immediately tangible.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- QLoRA combines 4-bit quantization of the base model with low-rank LoRA adapters trained in higher precision, making fine-tuning feasible on a single free-tier GPU.
+- Fine-tuning internalizes knowledge into model weights for faster inference and consistent recall, while RAG retrieves knowledge at query time for freshness and traceability --- mature systems combine both.
+- LoRA adapters modify only ~0.5--1% of parameters while freezing the rest, enabling multiple task-specific adapters to be swapped in and out without duplicating the full model.
+:::
+
+## Exercises
+
+**Easy:** Using the provided QLoRA notebook, fine-tune the model on the fictional Acme Analytics data and compare before/after responses on five factual questions. Record which questions the base model gets wrong and the fine-tuned model gets right.
+
+**Medium:** Create your own training dataset of 15--20 question-answer pairs about a fictional company you invent. Fine-tune the model and evaluate whether it can recall the key facts (CEO, revenue, products) you included in the training data.
+
+**Challenge:** Experiment with LoRA hyperparameters (rank, alpha scaling factor, target modules) across three different configurations. Measure the impact on training time, memory usage, and answer quality. Document which configuration produces the best tradeoff.
+
+**Challenge:** Build a hybrid system that combines a QLoRA fine-tuned model with a RAG pipeline. Fine-tune for core company knowledge and use RAG for dynamic data. Compare this hybrid approach against RAG-only and fine-tuning-only on a mix of static and dynamic questions.
+
+For applying fine-tuned or foundation models as autonomous problem-solvers with tool access, see {ref}`Ch 14 Single Agent <11-single-agent/intro>`.
+
 ## References
 
 - Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., & Chen, W. (2021). LoRA: Low-Rank Adaptation of Large Language Models. *arXiv preprint arXiv:2106.09685*. [https://arxiv.org/abs/2106.09685](https://arxiv.org/abs/2106.09685)

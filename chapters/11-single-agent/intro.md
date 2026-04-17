@@ -28,6 +28,25 @@ The honest lesson from comparing single-agent and multi-agent approaches on the 
 
 The next chapter explores what happens when you do split work across multiple agents, and critically examines when that added complexity is justified by measurable improvements in output quality.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- An agent is an LLM with access to tools; a single-agent system uses one system prompt and one LLM to handle an entire workflow by varying only the user prompt.
+- Single-agent systems are faster, cheaper, and simpler to debug than multi-agent alternatives because each query requires only one LLM call and there is exactly one place to look when something goes wrong.
+- The practical lesson is to start with a single agent, identify specific failure modes, and add specialized agents only to address those failures --- not because a framework encourages it.
+:::
+
+## Exercises
+
+**Easy:** Build a single-agent system that takes a CSV file, describes the columns, and generates three SQL queries to answer business questions. Use one system prompt for all tasks.
+
+**Medium:** Test the same agent on two different datasets (e.g., sales data vs. HR data) without changing the system prompt. Document where the generalist prompt succeeds and where it struggles with domain-specific nuances.
+
+**Challenge:** Deliberately push the single-agent pattern to its limits by giving it a five-step workflow (e.g., schema design, DDL generation, data validation, query writing, and result interpretation). Identify the point at which the system prompt becomes too complex and performance degrades, then propose where you would split into multiple agents.
+
+For exploring what happens when you decompose a workflow across multiple specialized agents with cross-validation, see {ref}`Ch 15 Multi-Agent <12-multi-agent/intro>`.
+
 ## References
 
 - Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2023). ReAct: Synergizing Reasoning and Acting in Language Models. *International Conference on Learning Representations (ICLR)*.

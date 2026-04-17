@@ -38,6 +38,25 @@ For straightforward, linear pipelines like a basic RAG chain or a single-step LL
 
 The notebook that follows implements all three graph patterns using the same fictional company documents from the LlamaIndex and LangChain chapters. You will define state schemas with `TypedDict`, build graphs with `StateGraph`, add conditional edges for routing and looping, visualize each graph with `draw_mermaid_png()`, and trace state evolution with `.stream()`. By the end, you will have a concrete understanding of how graph-based orchestration extends the capabilities of linear chains and when that extension is worth the additional complexity.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- LangGraph extends LangChain by replacing linear pipes with directed graphs that support conditional branching and loops, enabling workflows that classify-and-route or retry-until-sufficient.
+- Explicit state management via `TypedDict` makes every piece of data flowing through the graph named, typed, and inspectable at each node, eliminating hidden state.
+- The `.stream()` method provides node-by-node state tracing, giving full visibility into how the system arrived at its answer --- critical for debugging and stakeholder trust.
+:::
+
+## Exercises
+
+**Easy:** Build a two-node linear RAG graph (retrieve then generate) using `StateGraph` and `TypedDict`. Visualize it with `draw_mermaid_png()` and trace the state updates with `.stream()`.
+
+**Medium:** Add a `classify` node and conditional edges to route questions to at least three specialized handler nodes based on question category. Test with questions from different categories and verify that the correct branch executes.
+
+**Challenge:** Implement a retry loop where an `evaluate` node judges answer quality and conditionally loops back to `retrieve` with a broadened query. Cap the loop at three attempts and use `.stream()` to observe the attempts counter incrementing across iterations.
+
+For learning how to modify model weights directly instead of relying on retrieval at inference time, see {ref}`Ch 13 Fine-Tuning <10-finetuning/intro>`.
+
 ## References
 
 1. LangGraph Documentation. "Introduction to LangGraph." LangChain, 2025. [https://langchain-ai.github.io/langgraph/](https://langchain-ai.github.io/langgraph/)

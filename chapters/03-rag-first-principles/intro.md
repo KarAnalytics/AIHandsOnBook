@@ -44,6 +44,29 @@ In practice, many production systems combine both approaches: a fine-tuned model
 
 The hands-on notebook that follows this introduction walks you through building a complete RAG pipeline from scratch. You will chunk real documents, generate embeddings using an API, compute cosine similarity with NumPy, retrieve relevant passages, construct augmented prompts, and generate grounded answers -- all without any frameworks or abstractions. This from-scratch implementation gives you the foundational understanding that will make the framework-based approaches in later chapters feel intuitive rather than magical.
 
+For a related approach, see [RAG with Vector Databases](../04-rag-vector-databases/intro.md).
+
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- RAG solves three fundamental LLM limitations simultaneously: hallucinations (by grounding answers in retrieved evidence), knowledge cutoffs (by providing current documents), and lack of private data access (by retrieving from your own sources).
+- The retrieve-augment-generate pipeline is modular — you can swap retrieval mechanisms, LLM providers, or document collections independently without changing the other components.
+- Chunk size is a critical design tradeoff: smaller chunks give higher retrieval precision but risk losing surrounding context; larger chunks preserve context but may include irrelevant material and waste tokens.
+- Semantic search via embeddings and cosine similarity dramatically outperforms keyword search because it connects queries to documents based on meaning, not exact word matches (e.g., "employee attrition" matches "staff turnover").
+- RAG is preferred over fine-tuning when your knowledge base changes frequently, you need source citations, or you want to get started quickly — fine-tuning is better for changing model style or baking in specialized reasoning.
+:::
+
+## Exercises
+
+**Easy:** Explain in your own words why RAG is preferred over fine-tuning for a company that updates its product catalog weekly. Identify at least two specific advantages of RAG in this scenario.
+
+**Easy:** Take a one-page document and manually chunk it into pieces of approximately 200 tokens each. Then re-chunk it at 500 tokens. Compare the two approaches: which chunks better preserve the context needed to answer a specific question about the document?
+
+**Medium:** Using the from-scratch RAG notebook, experiment with retrieving the top-1 vs. top-3 vs. top-5 chunks for the same query. Compare the generated answers and identify the point where adding more chunks stops improving answer quality and starts introducing noise.
+
+**Challenge:** Build a from-scratch RAG pipeline for a new domain: download three Wikipedia articles on a topic of your choice, chunk them, generate embeddings, and implement cosine similarity retrieval with NumPy. Test with five questions and evaluate whether the grounded answers are more accurate than the LLM's ungrounded responses. Document any cases where retrieval fails and explain why.
+
 ## References
 
 1. Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Kuttler, H., Lewis, M., Yih, W., Rocktaschel, T., Riedel, S., & Kiela, D. (2020). "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks." *Advances in Neural Information Processing Systems*, 33, 9459-9474. [https://arxiv.org/abs/2005.11401](https://arxiv.org/abs/2005.11401)

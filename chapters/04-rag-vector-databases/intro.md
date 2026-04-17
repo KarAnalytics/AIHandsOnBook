@@ -36,6 +36,29 @@ The choice among these options depends on your requirements. For a classroom exe
 
 The hands-on notebooks that follow this introduction apply the vector database approach to real-world datasets. You will see how to load documents into ChromaDB, build searchable collections, perform similarity queries, and generate grounded answers -- all following the same retrieve-augment-generate pattern from the previous chapter, but now with infrastructure that scales gracefully beyond toy examples.
 
+For a related approach, see [RAG with Structured Data](../05-rag-structured-data/intro.md).
+
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- Vector databases solve the scalability problem of brute-force cosine similarity by using approximate nearest neighbor (ANN) algorithms like HNSW that search millions of vectors in milliseconds.
+- ChromaDB is an ideal learning tool because it installs with a single `pip install`, runs in-process without a separate server, and provides a clean Python API that mirrors the conceptual steps of RAG.
+- The indexing step (chunk, embed, store) is performed once offline, while the query step (embed query, search, retrieve, generate) runs in real time — the vector search itself is nearly instantaneous.
+- Consistency between indexing and querying is essential: the same embedding model must be used for both, since vectors from different models are not comparable.
+- Production vector database choices (Pinecone, Weaviate, Milvus, FAISS) depend on scale, managed-service preference, hybrid search needs, and algorithmic control — ChromaDB is best for prototyping and learning.
+:::
+
+## Exercises
+
+**Easy:** Using the ChromaDB notebook, create a collection and add five text chunks about a topic of your choice. Query the collection with a natural-language question and inspect the returned similarity scores. Which chunk ranked highest, and does that match your intuition?
+
+**Easy:** Explain why you must use the same embedding model for indexing and querying in a vector database. What would happen if you indexed documents with one model and queried with a different one?
+
+**Medium:** Add 50 chunks to a ChromaDB collection and compare retrieval quality when using top-K values of 1, 3, and 5. For each K value, evaluate whether the generated answer improves, stays the same, or degrades. Identify the sweet spot for your dataset.
+
+**Challenge:** Research two production vector databases (e.g., Pinecone and Weaviate) and compare them to ChromaDB along five dimensions: ease of setup, scalability, hybrid search support, managed hosting, and cost. Present your findings as a recommendation for a mid-size company building a customer support knowledge base with 100,000 documents.
+
 ## References
 
 1. Chroma. "ChromaDB Documentation." Chroma, 2025. [https://docs.trychroma.com/](https://docs.trychroma.com/)

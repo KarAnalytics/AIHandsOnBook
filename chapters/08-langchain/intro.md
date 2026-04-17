@@ -36,6 +36,27 @@ The choice between the two frameworks is not about which is better in the abstra
 
 The notebook that follows this introduction builds a complete RAG pipeline with LangChain using the same three fictional companies (Acme Analytics, Globex Cybersecurity, and Nextera Green Solutions) that you encountered in the LlamaIndex chapter. You will load documents with `DirectoryLoader`, split them with `RecursiveCharacterTextSplitter`, embed and index them in a FAISS vector store, and build a retrieval chain using LCEL pipe syntax. The notebook then goes beyond RAG to demonstrate a tool-calling agent that can look up company information, perform calculations, and report the current date, all orchestrated through an LCEL-based ReAct loop. This progression from retrieval to agency illustrates why LangChain has become the default framework for LLM application development.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- LangChain is a modular toolkit where you explicitly choose and compose each component (loader, splitter, embedder, vector store, chain), offering maximum flexibility at the cost of more boilerplate.
+- LCEL's pipe syntax (`retriever | format_docs | prompt | llm | parser`) creates readable, composable pipelines that automatically support streaming, batching, and async execution.
+- LangChain's agent framework enables LLMs to decide which tools to call at runtime using the ReAct pattern, moving beyond static retrieval into dynamic problem-solving.
+:::
+
+## Exercises
+
+**Easy:** Build a RAG chain using LCEL pipe syntax with `DirectoryLoader`, `RecursiveCharacterTextSplitter`, and a FAISS vector store. Query it with three questions and inspect the retrieved chunks.
+
+**Medium:** Create a tool-calling agent with at least two custom tools (e.g., a calculator and a date lookup). Test it with prompts that require tool use and prompts that do not, and observe how the agent decides when to call a tool versus answering directly.
+
+**Challenge:** Wrap a plain Python function using `RunnableLambda` and insert it into the middle of an LCEL pipeline to perform custom post-processing on retrieved documents (e.g., filtering by recency or relevance score) before they reach the LLM.
+
+**Challenge:** Compare identical RAG queries between your LangChain pipeline and the LlamaIndex pipeline from the previous chapter. Document differences in chunking strategy, retrieval results, and answer quality.
+
+For extending LangChain's linear pipelines with conditional branching and retry loops, see {ref}`Ch 12 LangGraph <09-langgraph/intro>`.
+
 ## References
 
 1. LangChain Documentation. "Introduction." LangChain, 2025. [https://python.langchain.com/docs/introduction/](https://python.langchain.com/docs/introduction/)

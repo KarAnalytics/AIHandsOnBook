@@ -38,6 +38,25 @@ In practice, many production AI systems use both approaches. The computationally
 
 The sub-chapters that follow provide step-by-step instructions for both deployment paths: setting up the Supabase Edge Function as an MCP server and building the corresponding Dify workflows that consume it.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- Moving from notebooks to production requires making tools accessible as permanent cloud endpoints (Supabase Edge Functions) and building user-facing applications that non-technical stakeholders can maintain (Dify).
+- Supabase Edge Functions provide serverless, zero-infrastructure MCP deployment: write TypeScript, deploy with one command, and get a permanent HTTPS URL that any client can call.
+- No-code platforms like Dify replicate RAG pipelines and tool-calling workflows visually, dramatically reducing time-to-deployment while enabling business users to build and maintain AI applications without writing code.
+:::
+
+## Exercises
+
+**Easy:** Deploy a simple Supabase Edge Function that implements one MCP tool (e.g., a currency converter). Call it from a Python notebook using the `requests` library and verify the JSON-RPC response format.
+
+**Medium:** Build a Dify workflow that connects to an MCP endpoint via an HTTP Request node, extracts the tool result with a Code node, and formats the output with an LLM node. Publish it as a web application and test it with five different user inputs.
+
+**Challenge:** Create a hybrid deployment that combines a Dify Knowledge Base (document RAG) with an external MCP tool endpoint in a single workflow. Route user questions conditionally: factual document questions go to the Knowledge Base path, while computation-oriented questions go to the MCP tool path. Evaluate the routing accuracy across 10 test queries.
+
+For revisiting the foundational retrieval techniques that underpin many of the deployment patterns in this chapter, see {ref}`Ch 6 RAG <06-rag/intro>`, which covers building RAG pipelines from scratch.
+
 ## References
 
 - Anthropic. (2024). Model Context Protocol Specification. https://modelcontextprotocol.io/

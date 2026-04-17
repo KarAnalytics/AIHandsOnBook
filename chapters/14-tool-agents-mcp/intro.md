@@ -46,6 +46,27 @@ The KU Parking Assistant brings together several threads from across this book. 
 
 The broader lesson is about knowing when to use an LLM and when to use a tool. Language understanding, intent classification, natural-language formatting, and open-ended reasoning are LLM tasks. Distance calculations, data lookups, URL generation, and any operation with a known correct algorithm are tool tasks. The best agents combine both, letting each component do what it does best.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- Effective tool-using agents delegate deterministic tasks (distance calculations, data lookups, URL generation) to Python functions and reserve the LLM for language understanding, intent classification, and response formatting.
+- The Model Context Protocol (MCP) standardizes tool communication via JSON-RPC 2.0 over HTTP, enabling any MCP-compatible client to discover and call tools on any MCP-compatible server without custom integration code.
+- The progression from inline tools to cloud MCP endpoints requires no changes to the agent logic (system prompt, ReAct loop, output formatting) --- only the transport layer changes from a function call to an HTTP request.
+:::
+
+## Exercises
+
+**Easy:** Build a simple tool-using agent with two inline Python tools (e.g., a unit converter and a tip calculator). Write a ReAct-style system prompt that instructs the LLM to output JSON when it wants to call a tool, and test with three user queries.
+
+**Medium:** Take the inline tools from the previous exercise and deploy them as an MCP server on Supabase Edge Functions. Update your agent to call the tools via HTTP instead of local function invocation, and verify that the results are identical.
+
+**Challenge:** Add a new tool to an existing MCP server (e.g., `find_parking_by_color`) and demonstrate that an existing client can discover it automatically via `tools/list` without any client-side code changes. Document the full round trip from tool registration to client discovery to invocation.
+
+**Challenge:** Build a multi-tool agent that chains tool calls --- for example, first resolving a building name via fuzzy matching, then computing distances to nearby parking lots, then generating a Google Maps URL --- and analyze how the ReAct loop orchestrates the sequence.
+
+For deploying tool-serving MCP endpoints to production and building no-code workflows that consume them, see {ref}`Ch 18 Deployment <15-deployment/intro>`.
+
 ## References
 
 - Anthropic. (2024). Model Context Protocol Specification. https://modelcontextprotocol.io/

@@ -44,6 +44,25 @@ Agent 5 exemplifies a pattern that has become increasingly important in producti
 
 The LLM-as-a-judge pattern is not limited to comparing two answers. It can be used to assess factual accuracy against a reference, to score the helpfulness or safety of a response, or to decide whether a generated SQL query is likely to be correct before executing it. In all these cases, the key insight is the same: a second LLM call that evaluates the first is often cheaper than the cost of serving a wrong answer to a user. The pattern appears again in autonomous agents, where a self-critique phase serves a similar quality-assurance function.
 
+## Key Takeaways
+
+:::{admonition} Key Takeaways
+:class: tip
+- Multi-agent systems assign each agent a narrow role with a dedicated system prompt, enabling independent testing, debugging, and improvement of each stage.
+- The primary value of multi-agent architectures comes from cross-validation (comparing answers from independent approaches), not from task specialization alone --- the LLM-as-a-judge pattern (Agent 5) is the key differentiator.
+- Multi-agent systems cost roughly 3x more per query than single-agent alternatives; the added complexity is justified only when cross-checking, auditing, or genuinely different expertise at different stages provides measurable benefit.
+:::
+
+## Exercises
+
+**Easy:** Implement a two-agent pipeline where Agent 1 generates a SQL query and Agent 2 reviews it for correctness before execution. Test with three business questions and document whether Agent 2 catches any errors.
+
+**Medium:** Build the full five-agent pipeline (Data Architect, SQL Developer, SQL Query Writer, RAG Analyst, Evaluator) and run the same business questions through both the multi-agent pipeline and a single-agent system. Compare the answers and the similarity scores from the Evaluator.
+
+**Challenge:** Design a custom LLM-as-a-judge agent that goes beyond similarity scoring to produce a structured evaluation with categories (factual accuracy, completeness, consistency) and actionable feedback. Integrate it as a replacement for Agent 5 and assess whether the richer evaluation improves downstream decision-making.
+
+For extending multi-agent workflows with self-directed planning and self-critique instead of human-defined pipelines, see {ref}`Ch 16 Autonomous Agents <13-autonomous-agents/intro>`.
+
 ## References
 
 - Wu, Q., Bansal, G., Zhang, J., Wu, Y., Li, B., Zhu, E., Jiang, L., Zhang, X., Zhang, S., Liu, J., Awadallah, A. H., White, R. W., Burger, D., & Wang, C. (2023). AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation. *arXiv preprint arXiv:2308.08155*.

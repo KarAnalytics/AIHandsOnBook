@@ -2,8 +2,9 @@ version: 1
 project:
   title: 'AI for Business: A Hands-On Guide'
   authors:
-    - name: Sameer Verma
-    - name: University of Kansas
+    - name: Karthik Srinivasan
+      url: https://business.ku.edu/people/karthik-srinivasan
+      affiliation: University of Kansas School of Business
   copyright: '2026'
   github: KarAnalytics/AIHandsOnBook
   toc:

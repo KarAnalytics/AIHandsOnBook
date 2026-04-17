@@ -35,15 +35,9 @@ Every chapter is a Jupyter notebook. You can:
 
 All notebooks use the [`llm_cascade`](https://github.com/KarAnalytics/llm_cascade) package for automatic LLM provider fallback. Set any one of 8 API keys (Gemini, OpenAI, Groq, etc.) and every notebook works out of the box.
 
-## Who this is for
+## Author
 
-- Business students learning AI for the first time
-- Data scientists who want hands-on examples of RAG, agents, and deployment
-- Anyone who learns best by running code, not reading theory
-
-## About the author
-
-Sameer Verma teaches AI for Business at the University of Kansas School of Business.
+[Karthik Srinivasan](https://business.ku.edu/people/karthik-srinivasan), University of Kansas School of Business.
 
 ---
 

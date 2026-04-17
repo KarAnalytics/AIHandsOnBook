@@ -1,0 +1,50 @@
+# Book settings
+title: "AI for Business: A Hands-On Guide"
+author: "Sameer Verma, University of Kansas"
+copyright: "2026"
+logo: ""
+
+# Force re-execution of notebooks on each build
+execute:
+  execute_notebooks: "off"  # "off" = use pre-run outputs; "auto" = re-execute
+
+# HTML settings
+html:
+  favicon: ""
+  use_issues_button: true
+  use_repository_button: true
+  use_edit_page_button: true
+  home_page_in_navbar: true
+  baseurl: "https://karanalytics.github.io/AIHandsOnBook"
+  extra_footer: |
+    <p>Built with <a href="https://jupyterbook.org">Jupyter Book</a> |
+    <a href="https://github.com/KarAnalytics/code_demos">Source notebooks</a></p>
+  comments:
+    hypothesis: false
+
+# Repository settings (for "Edit on GitHub" buttons)
+repository:
+  url: "https://github.com/KarAnalytics/AIHandsOnBook"
+  path_to_book: ""
+  branch: main
+
+# Launch buttons (let readers open notebooks in Colab)
+launch_buttons:
+  colab_url: "https://colab.research.google.com"
+  notebook_interface: "classic"
+
+# Sphinx settings
+sphinx:
+  extra_extensions:
+    - sphinx_togglebutton
+  config:
+    html_theme_options:
+      navigation_with_keys: false
+
+# Parse settings
+parse:
+  myst_enable_extensions:
+    - colon_fence
+    - dollarmath
+    - linkify
+    - substitution

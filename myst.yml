@@ -1,0 +1,82 @@
+version: 1
+project:
+  title: 'AI for Business: A Hands-On Guide'
+  authors:
+    - name: Sameer Verma
+    - name: University of Kansas
+  copyright: '2026'
+  github: KarAnalytics/AIHandsOnBook
+  toc:
+    - file: intro.md
+    - title: Foundations
+      children:
+        - file: chapters/01-llm-basics/intro.md
+          children:
+            - file: chapters/01-llm-basics/tokenizer_examples.ipynb
+            - file: chapters/01-llm-basics/embedding_example.ipynb
+            - file: chapters/01-llm-basics/tfidf_example.ipynb
+            - file: chapters/01-llm-basics/attention_example.ipynb
+        - file: chapters/02-llm-providers/intro.md
+          children:
+            - file: chapters/02-llm-providers/llm_cascade.md
+    - title: Retrieval-Augmented Generation (RAG)
+      children:
+        - file: chapters/03-rag-first-principles/intro.md
+          children:
+            - file: chapters/03-rag-first-principles/rag_first_principles.ipynb
+        - file: chapters/04-rag-vector-databases/intro.md
+          children:
+            - file: chapters/04-rag-vector-databases/rag_countries_chromadb.ipynb
+            - file: chapters/04-rag-vector-databases/rag_allcountries_chromadb.ipynb
+            - file: chapters/04-rag-vector-databases/rag_featherweight.ipynb
+        - file: chapters/05-rag-structured-data/intro.md
+          children:
+            - file: chapters/05-rag-structured-data/dbms_rag_sqlite.ipynb
+            - file: chapters/05-rag-structured-data/graph_rag_trade.ipynb
+        - file: chapters/06-rag-multimedia/intro.md
+          children:
+            - file: chapters/06-rag-multimedia/image_rag.ipynb
+            - file: chapters/06-rag-multimedia/video_rag.ipynb
+    - title: RAG Frameworks
+      children:
+        - file: chapters/07-llamaindex/intro.md
+          children:
+            - file: chapters/07-llamaindex/llamaindex_rag.ipynb
+        - file: chapters/08-langchain/intro.md
+          children:
+            - file: chapters/08-langchain/langchain_demo.ipynb
+        - file: chapters/09-langgraph/intro.md
+          children:
+            - file: chapters/09-langgraph/langgraph_demo.ipynb
+    - title: Fine-Tuning
+      children:
+        - file: chapters/10-finetuning/intro.md
+          children:
+            - file: chapters/10-finetuning/qlora_finetuning.ipynb
+    - title: Agents
+      children:
+        - file: chapters/11-single-agent/intro.md
+          children:
+            - file: chapters/11-single-agent/single_agent_db.ipynb
+        - file: chapters/12-multi-agent/intro.md
+          children:
+            - file: chapters/12-multi-agent/multi_agent_db.ipynb
+        - file: chapters/13-autonomous-agents/intro.md
+          children:
+            - file: chapters/13-autonomous-agents/autonomous_agent.ipynb
+        - file: chapters/14-tool-agents-mcp/intro.md
+          children:
+            - file: chapters/14-tool-agents-mcp/ku_parking_assistant.ipynb
+            - file: chapters/14-tool-agents-mcp/ku_parking_mcp.ipynb
+    - title: Deployment and No-Code
+      children:
+        - file: chapters/15-deployment/intro.md
+          children:
+            - file: chapters/15-deployment/mcp_supabase.md
+            - file: chapters/15-deployment/dify_workflow.md
+site:
+  options:
+    logo: ''
+    favicon: ''
+    folders: true
+  template: book-theme

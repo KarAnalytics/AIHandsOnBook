@@ -57,6 +57,12 @@ BibTeX:
 
 [Karthik Srinivasan](https://business.ku.edu/people/karthik-srinivasan), University of Kansas School of Business.
 
+## A Note on AI Collaboration
+
+This book was developed through an extensive human-AI collaboration. The author used Claude Code (Anthropic) as a development partner throughout the process — from generating and debugging the Python notebooks, to building the `llm_cascade` package, to drafting chapter prose, to assembling the book infrastructure. The AI assisted with code generation, content synthesis from lecture materials, technical writing, and iterative debugging. All content was reviewed, directed, and approved by the author, who takes full responsibility for the accuracy and pedagogical choices in the final work.
+
+In many ways, the creation of this book is itself a demonstration of the AI-human collaboration patterns it teaches — particularly the vibe coding workflow described in Chapter 5 and the agent-assisted development covered in the later chapters.
+
 ---
 
 *Built with [Jupyter Book](https://jupyterbook.org). Source notebooks at [github.com/KarAnalytics/code_demos](https://github.com/KarAnalytics/code_demos).*

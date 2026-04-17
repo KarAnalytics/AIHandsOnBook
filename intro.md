@@ -1,3 +1,14 @@
+---
+exports:
+  - format: typst
+    output: ai-for-business.pdf
+    template: plain_typst_book
+    articles:
+      - file: intro.md
+        title: AI for Business
+        abstract: A hands-on guide to building AI-powered applications for business, covering LLM foundations, RAG, fine-tuning, agents, and deployment.
+---
+
 # AI for Business: A Hands-On Guide
 
 Welcome to this interactive, hands-on guide to building AI-powered applications for business. Every chapter is a runnable Jupyter notebook — you learn by doing, not just reading.
@@ -7,6 +18,9 @@ Welcome to this interactive, hands-on guide to building AI-powered applications 
 ```{image} https://img.shields.io/badge/Notebooks-15+-blue
 ```
 ```{image} https://img.shields.io/badge/Colab-Ready-orange
+```
+```{image} https://img.shields.io/badge/📥_Download-PDF-red
+:target: https://karanalytics.github.io/AIHandsOnBook/ai-for-business.pdf
 ```
 ```{image} https://img.shields.io/badge/License-MIT-green
 ```
@@ -34,6 +48,21 @@ Every chapter is a Jupyter notebook. You can:
 - **Run locally** — clone the [source repo](https://github.com/KarAnalytics/code_demos) and run notebooks in VS Code or JupyterLab
 
 All notebooks use the [`llm_cascade`](https://github.com/KarAnalytics/llm_cascade) package for automatic LLM provider fallback. Set any one of 8 API keys (Gemini, OpenAI, Groq, etc.) and every notebook works out of the box.
+
+## How to cite this book
+
+> Srinivasan, K. (2026). *AI for business: A hands-on guide*. https://karanalytics.github.io/AIHandsOnBook/
+
+BibTeX:
+
+```bibtex
+@book{srinivasan2026aiforbusiness,
+  title  = {AI for Business: A Hands-On Guide},
+  author = {Srinivasan, Karthik},
+  year   = {2026},
+  url    = {https://karanalytics.github.io/AIHandsOnBook/}
+}
+```
 
 ## Author
 

@@ -81,5 +81,8 @@ site:
     logo: ''
     favicon: ''
     folders: true
+    BASE_URL: /AIHandsOnBook
   template: book-theme
-  BASE_URL: /AIHandsOnBook
+  actions:
+    - title: Download PDF
+      url: /AIHandsOnBook/ai-for-business.pdf

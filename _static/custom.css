@@ -1,0 +1,7 @@
+/* Hide the "Made with MyST" branding */
+.made-with-myst,
+[data-testid="made-with-myst"],
+footer .myst-badge,
+.powered-by {
+    display: none !important;
+}

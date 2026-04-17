@@ -40,7 +40,7 @@ Visual RAG opens up application areas that text-based RAG simply cannot address.
 
 The two notebooks that follow implement these ideas end to end. The first notebook, **Image RAG**, builds a synthetic product catalog, creates a CLIP embedding index, retrieves images by text query, and generates multimodal answers with Gemini. The second notebook, **Video RAG**, generates a synthetic product showcase video, extracts keyframes, indexes them with CLIP, and demonstrates temporal retrieval with timestamped answers. Together, they show that the RAG pattern generalizes naturally from text to pixels, with CLIP and multimodal LLMs providing the machinery to bridge the modality gap.
 
-For a related approach, see [RAG with LlamaIndex](../07-rag-llamaindex/intro.md).
+For a related approach, see **RAG with LlamaIndex**.
 
 ## Key Takeaways
 

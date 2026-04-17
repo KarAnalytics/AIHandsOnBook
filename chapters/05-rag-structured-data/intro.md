@@ -40,7 +40,7 @@ Graph RAG is the right choice when the relationships in your data are first-clas
 
 The two notebooks that follow put these ideas into practice. The first notebook, **DBMS_RAG_SQLite**, builds a SQLite database from the classic Supplier-Parts schema, extracts schema context, generates SQL from natural-language questions, and compares grounded answers against ungrounded LLM responses. The second notebook, **GRAPH_RAG_Trade**, constructs a Kuzu graph database from international trade data, generates Cypher queries, and visualizes the retrieved subgraphs to help you verify the LLM's answers. Together, they demonstrate that RAG is a general-purpose architecture whose retrieval mechanism can be adapted to whatever data source holds the evidence your application needs.
 
-For a related approach, see [RAG with Images and Video](../06-rag-multimedia/intro.md).
+For a related approach, see **RAG with Images and Video**.
 
 ## Key Takeaways
 

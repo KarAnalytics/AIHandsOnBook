@@ -48,7 +48,7 @@ The four notebooks that accompany this chapter let you work with each of these c
 
 Each notebook is self-contained and runs on Google Colab preferably with T4 GPU. Notebooks also run on CPU mode in Google Colab but may take a little longer to complete.
 
-For a related approach, see [Calling LLMs: Providers and Fallback](../02-llm-providers/intro.md).
+For a related approach, see **Calling LLMs: Providers and Fallback**.
 
 ## Key Takeaways
 

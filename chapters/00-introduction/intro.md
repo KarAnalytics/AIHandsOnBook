@@ -48,7 +48,7 @@ As you proceed through the hands-on exercises in the following chapters, keep th
 
 The chapters that follow put these concepts into practice. You will build RAG pipelines that ground model answers in retrieved evidence, fine-tune models with QLoRA to bake in new knowledge, construct agent systems that call real tools, and deploy these capabilities to production via MCP servers and no-code platforms. Every notebook is designed to be run on Google Colab — preferably with a T4 GPU, though CPU mode also works — so you can learn by doing, not just by reading.
 
-For a related approach, see [LLM Foundations](../01-llm-basics/intro.md).
+For a related approach, see **LLM Foundations**.
 
 ## Key Takeaways
 

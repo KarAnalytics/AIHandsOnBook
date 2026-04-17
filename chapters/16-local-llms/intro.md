@@ -46,7 +46,7 @@ In practice, many organizations adopt a **hybrid approach**: local models for de
 
 The companion notebook walks through setting up LM Studio, downloading a model, starting the local server, and calling it from Python — giving you firsthand experience with the local inference workflow.
 
-For a related approach, see [Vibe Coding](../17-vibe-coding/intro.md).
+For a related approach, see **Vibe Coding**.
 
 ## Key Takeaways
 

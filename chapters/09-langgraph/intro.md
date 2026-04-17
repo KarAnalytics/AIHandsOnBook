@@ -55,7 +55,7 @@ The notebook that follows implements all three graph patterns using the same fic
 
 **Challenge:** Implement a retry loop where an `evaluate` node judges answer quality and conditionally loops back to `retrieve` with a broadened query. Cap the loop at three attempts and use `.stream()` to observe the attempts counter incrementing across iterations.
 
-For learning how to modify model weights directly instead of relying on retrieval at inference time, see {ref}`Ch 13 Fine-Tuning <10-finetuning/intro>`.
+For learning how to modify model weights directly instead of relying on retrieval at inference time, see **Ch 13 Fine-Tuning**.
 
 ## References
 

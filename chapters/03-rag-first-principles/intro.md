@@ -44,7 +44,7 @@ In practice, many production systems combine both approaches: a fine-tuned model
 
 The hands-on notebook that follows this introduction walks you through building a complete RAG pipeline from scratch. You will chunk real documents, generate embeddings using an API, compute cosine similarity with NumPy, retrieve relevant passages, construct augmented prompts, and generate grounded answers -- all without any frameworks or abstractions. This from-scratch implementation gives you the foundational understanding that will make the framework-based approaches in later chapters feel intuitive rather than magical.
 
-For a related approach, see [RAG with Vector Databases](../04-rag-vector-databases/intro.md).
+For a related approach, see **RAG with Vector Databases**.
 
 ## Key Takeaways
 

@@ -63,7 +63,7 @@ The QLoRA notebook in this chapter provides a hands-on demonstration of the comp
 
 **Challenge:** Build a hybrid system that combines a QLoRA fine-tuned model with a RAG pipeline. Fine-tune for core company knowledge and use RAG for dynamic data. Compare this hybrid approach against RAG-only and fine-tuning-only on a mix of static and dynamic questions.
 
-For applying fine-tuned or foundation models as autonomous problem-solvers with tool access, see {ref}`Ch 14 Single Agent <11-single-agent/intro>`.
+For applying fine-tuned or foundation models as autonomous problem-solvers with tool access, see **Ch 14 Single Agent**.
 
 ## References
 

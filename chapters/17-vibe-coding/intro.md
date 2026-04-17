@@ -50,7 +50,7 @@ This does not eliminate the need for professional software engineers — product
 
 Every notebook in this book was built using vibe coding tools. The fact that you are reading a functional, deployed, multi-chapter interactive textbook with 30+ runnable notebooks, a cloud-hosted MCP server, and a Supabase Edge Function — all created through conversational AI interactions — is itself a demonstration of what vibe coding makes possible.
 
-For a related approach, see [RAG from First Principles](../03-rag-first-principles/intro.md).
+For a related approach, see **RAG from First Principles**.
 
 ## Key Takeaways
 

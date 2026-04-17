@@ -39,7 +39,7 @@ The notebook that follows this introduction demonstrates LlamaIndex using three 
 
 **Challenge:** Swap `SimpleDirectoryReader` for a LlamaHub connector (e.g., `GithubRepositoryReader` or `GoogleDriveReader`). Build a RAG pipeline over a non-local data source and document what changes in the code versus what stays the same.
 
-For a comparison of LlamaIndex's opinionated defaults with a more modular, compose-your-own-pipeline approach, see {ref}`Ch 11 LangChain <08-langchain/intro>`.
+For a comparison of LlamaIndex's opinionated defaults with a more modular, compose-your-own-pipeline approach, see **Ch 11 LangChain**.
 
 ## References
 

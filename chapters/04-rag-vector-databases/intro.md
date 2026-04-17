@@ -36,7 +36,7 @@ The choice among these options depends on your requirements. For a classroom exe
 
 The hands-on notebooks that follow this introduction apply the vector database approach to real-world datasets. You will see how to load documents into ChromaDB, build searchable collections, perform similarity queries, and generate grounded answers -- all following the same retrieve-augment-generate pattern from the previous chapter, but now with infrastructure that scales gracefully beyond toy examples.
 
-For a related approach, see [RAG with Structured Data](../05-rag-structured-data/intro.md).
+For a related approach, see **RAG with Structured Data**.
 
 ## Key Takeaways
 

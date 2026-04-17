@@ -45,7 +45,7 @@ The next chapter explores what happens when you do split work across multiple ag
 
 **Challenge:** Deliberately push the single-agent pattern to its limits by giving it a five-step workflow (e.g., schema design, DDL generation, data validation, query writing, and result interpretation). Identify the point at which the system prompt becomes too complex and performance degrades, then propose where you would split into multiple agents.
 
-For exploring what happens when you decompose a workflow across multiple specialized agents with cross-validation, see {ref}`Ch 15 Multi-Agent <12-multi-agent/intro>`.
+For exploring what happens when you decompose a workflow across multiple specialized agents with cross-validation, see **Ch 15 Multi-Agent**.
 
 ## References
 

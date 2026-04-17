@@ -55,7 +55,7 @@ The notebook that follows this introduction builds a complete RAG pipeline with 
 
 **Challenge:** Compare identical RAG queries between your LangChain pipeline and the LlamaIndex pipeline from the previous chapter. Document differences in chunking strategy, retrieval results, and answer quality.
 
-For extending LangChain's linear pipelines with conditional branching and retry loops, see {ref}`Ch 12 LangGraph <09-langgraph/intro>`.
+For extending LangChain's linear pipelines with conditional branching and retry loops, see **Ch 12 LangGraph**.
 
 ## References
 

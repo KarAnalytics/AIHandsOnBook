@@ -65,7 +65,7 @@ The broader lesson is about knowing when to use an LLM and when to use a tool. L
 
 **Challenge:** Build a multi-tool agent that chains tool calls --- for example, first resolving a building name via fuzzy matching, then computing distances to nearby parking lots, then generating a Google Maps URL --- and analyze how the ReAct loop orchestrates the sequence.
 
-For deploying tool-serving MCP endpoints to production and building no-code workflows that consume them, see {ref}`Ch 18 Deployment <15-deployment/intro>`.
+For deploying tool-serving MCP endpoints to production and building no-code workflows that consume them, see **Ch 18 Deployment**.
 
 ## References
 

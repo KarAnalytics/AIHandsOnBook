@@ -61,7 +61,7 @@ The LLM-as-a-judge pattern is not limited to comparing two answers. It can be us
 
 **Challenge:** Design a custom LLM-as-a-judge agent that goes beyond similarity scoring to produce a structured evaluation with categories (factual accuracy, completeness, consistency) and actionable feedback. Integrate it as a replacement for Agent 5 and assess whether the richer evaluation improves downstream decision-making.
 
-For extending multi-agent workflows with self-directed planning and self-critique instead of human-defined pipelines, see {ref}`Ch 16 Autonomous Agents <13-autonomous-agents/intro>`.
+For extending multi-agent workflows with self-directed planning and self-critique instead of human-defined pipelines, see **Ch 16 Autonomous Agents**.
 
 ## References
 

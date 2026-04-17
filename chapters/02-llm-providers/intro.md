@@ -32,7 +32,7 @@ For students on a budget, the recommended starting point is to sign up for free-
 
 The next page provides a complete technical reference for `llm_cascade`, including installation instructions, supported providers, model overrides, and embedding generation.
 
-For a related approach, see [Local LLMs](../16-local-llms/intro.md).
+For a related approach, see **Local LLMs**.
 
 ## Key Takeaways
 

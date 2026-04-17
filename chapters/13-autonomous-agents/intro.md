@@ -63,7 +63,7 @@ These limitations are not flaws in the design but deliberate simplifications tha
 
 **Challenge:** Extend the execution phase to use a real tool (e.g., web search or a market data API) for at least one of the research questions. Compare the grounded analysis with the LLM-only analysis and assess whether tool access meaningfully changes the recommendation or confidence score.
 
-For equipping agents with deterministic tools and deploying them as reusable services via the Model Context Protocol, see {ref}`Ch 17 Tool Agents and MCP <14-tool-agents-mcp/intro>`.
+For equipping agents with deterministic tools and deploying them as reusable services via the Model Context Protocol, see **Ch 17 Tool Agents and MCP**.
 
 ## References
 

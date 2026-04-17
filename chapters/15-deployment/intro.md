@@ -55,7 +55,7 @@ The sub-chapters that follow provide step-by-step instructions for both deployme
 
 **Challenge:** Create a hybrid deployment that combines a Dify Knowledge Base (document RAG) with an external MCP tool endpoint in a single workflow. Route user questions conditionally: factual document questions go to the Knowledge Base path, while computation-oriented questions go to the MCP tool path. Evaluate the routing accuracy across 10 test queries.
 
-For revisiting the foundational retrieval techniques that underpin many of the deployment patterns in this chapter, see {ref}`Ch 6 RAG <06-rag/intro>`, which covers building RAG pipelines from scratch.
+For revisiting the foundational retrieval techniques that underpin many of the deployment patterns in this chapter, see **Ch 6 RAG**, which covers building RAG pipelines from scratch.
 
 ## References
 

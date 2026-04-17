@@ -80,3 +80,4 @@ site:
     favicon: ''
     folders: true
   template: book-theme
+  BASE_URL: /AIHandsOnBook

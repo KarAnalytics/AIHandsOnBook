@@ -76,6 +76,7 @@ project:
             - file: chapters/15-deployment/mcp_supabase.md
             - file: chapters/15-deployment/dify_workflow.md
 site:
+  title: AI for Business
   options:
     logo: ''
     favicon: ''

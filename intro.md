@@ -1,14 +1,3 @@
----
-exports:
-  - format: typst
-    output: ai-for-business.pdf
-    template: plain_typst_book
-    articles:
-      - file: intro.md
-        title: AI for Business
-        abstract: A hands-on guide to building AI-powered applications for business, covering LLM foundations, RAG, fine-tuning, agents, and deployment.
----
-
 # AI for Business: A Hands-On Guide
 
 Welcome to this interactive, hands-on guide to building AI-powered applications for business. Every chapter is a runnable Jupyter notebook — you learn by doing, not just reading.

@@ -7,6 +7,10 @@ project:
       affiliation: University of Kansas School of Business
   copyright: '2026'
   github: KarAnalytics/AIHandsOnBook
+  exports:
+    - format: typst
+      template: plain_typst_book
+      output: ai-for-business.pdf
   toc:
     - file: intro.md
     - title: Foundations

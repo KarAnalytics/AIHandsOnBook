@@ -7,3 +7,6 @@ gitignore_materials/
 AI at a Glance Chapter notes.pdf
 *.pdf
 !ai-for-business.pdf
+
+# Supabase CLI local cache (project-ref, versions, etc.)
+infra/**/supabase/.temp/

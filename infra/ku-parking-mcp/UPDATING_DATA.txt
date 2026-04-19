@@ -1,0 +1,14 @@
+##I used claude code to get these suggestions. I created a supabase serverless MCP for storing KU parking coordinates. 
+
+URL: 
+https://phhgezbdcpnjbpzvslct.supabase.co/functions/v1/ku-parking
+
+When you want to add more lots or fix a coordinate:
+
+Edit Agentic/mcp/supabase/supabase/functions/ku-parking/index.ts locally (just change the KU_BUILDINGS or KU_PARKING_LOTS arrays near the top)
+Redeploy:
+
+cd Agentic/mcp/supabase
+supabase functions deploy ku-parking --no-verify-jwt
+The new data is live immediately. No client code changes needed — anyone calling the same URL will see the fresh data on their next request.
+

@@ -28,10 +28,25 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
-import filecmp
-import shutil
 import sys
 from pathlib import Path
+
+# -----------------------------------------------------------------------------
+# Book-side -> code_demos-side transformation
+# -----------------------------------------------------------------------------
+# Chapter notebooks encode underscores in Colab badge URLs as %5F because
+# Typst (the PDF backend) escapes a literal `_` in URLs to `\_`, which then
+# gets triple-URL-encoded by Colab and breaks the "Open in Colab" button in
+# the PDF. %5F is pass-through-safe through Typst.
+#
+# On the code_demos side we need the opposite: literal underscores, because
+# GitHub's "Open in Colab" shortcut re-encodes `%` -> `%25` -> `%2525` on
+# each hop and breaks if the URL already contains a %5F.
+#
+# Hence the one-way translation applied here during sync.
+
+def transform_for_code_demos(data: bytes) -> bytes:
+    return data.replace(b"%5F", b"_")
 
 # -----------------------------------------------------------------------------
 # Paths
@@ -111,8 +126,9 @@ NOTEBOOK_PAIRS: list[tuple[str, str]] = [
 
 
 def copy_pair(src: Path, dst: Path) -> None:
+    """Copy with book -> code_demos transformation (see transform_for_code_demos)."""
     dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src, dst)
+    dst.write_bytes(transform_for_code_demos(src.read_bytes()))
 
 
 def main() -> int:
@@ -149,8 +165,8 @@ def main() -> int:
             print(f"  synced  {src_rel}  ->  code_demos/{dst_name}")
         print()
 
-    # Phase 2: verify identical (always runs)
-    print("Verifying pairs are byte-identical...")
+    # Phase 2: verify code_demos matches the transformed source (always runs)
+    print("Verifying pairs are identical (after %5F -> _ transform)...")
     for src_rel, dst_name in NOTEBOOK_PAIRS:
         src = BOOK_ROOT / src_rel
         dst = CODE_DEMOS / dst_name
@@ -162,7 +178,9 @@ def main() -> int:
             print(f"  MISSING DEST:   code_demos/{dst_name}")
             failed = True
             continue
-        if filecmp.cmp(src, dst, shallow=False):
+        expected = transform_for_code_demos(src.read_bytes())
+        actual = dst.read_bytes()
+        if expected == actual:
             print(f"  ok      {src_rel}")
         else:
             print(f"  DRIFT:  {src_rel}  !=  code_demos/{dst_name}")

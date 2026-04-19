@@ -1,0 +1,17 @@
+Getting started with LMStudio 
+
+If you are not a blind follower, read this section before proceeding with the installations: 
+Why are we doing these things?
+We will learn to use Local Large Language Models (LLMs) in this course. There are several platforms for installing, managing, and running LLMs including LM Studio, Ollama, AnythingLLM, GPT4All, Jan, Llama.cpp, vLLM. We will use LM Studio in this course as it has an intuitive and transparent interface for learning about LLMs and its operations. 
+II.	Install LM Studio
+Go to https://lmstudio.ai/ and install the latest version of this app for Windows or MacOS as necessary. No Login needed but login gives you access to community resources (Q&A blogs, posting questions, patches, etc.).
+Run the Lmstudio app. Your LMStudio front end app should look like this:
+ 
+Choose the ‘Developer’ option in the bottom left corner to be able to use all the features we need for this course. 
+
+ 
+
+You should now be able to download and access models from the shared folder (lmstudio\models) as local LLMs. I currently have around 15 models, but I believe with ~30 students downloading/trying different models, we may reach above 50 models by the end of semester. 
+
+ 
+Even if you do not download any models, you will still have access to the other models already downloaded in the RESFS folder. 

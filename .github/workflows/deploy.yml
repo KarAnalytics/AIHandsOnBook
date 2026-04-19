@@ -17,9 +17,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install jupyter-book
-      - run: BASE_URL=/AIHandsOnBook jupyter-book build --html
-      - run: cp ai-for-business.pdf _build/html/ 2>/dev/null || echo "No PDF to copy"
+      - run: pip install -r requirements.txt
+      - run: jupyter-book build .
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _build/html

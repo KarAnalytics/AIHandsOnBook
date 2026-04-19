@@ -1,0 +1,3 @@
+npx mystmd build --pdf 
+
+Do this in the AIBook folder.  

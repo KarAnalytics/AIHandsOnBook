@@ -1,0 +1,5 @@
+supabase functions deploy ku-parking --no-verify-jwt
+
+in 
+
+infra/mcp/supabase/

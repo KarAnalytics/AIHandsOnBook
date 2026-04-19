@@ -46,13 +46,65 @@ CODE_DEMOS = BOOK_ROOT / "code_demos"
 # -----------------------------------------------------------------------------
 # (chapter path relative to BOOK_ROOT,   code_demos filename)
 NOTEBOOK_PAIRS: list[tuple[str, str]] = [
-    # Chapter 14 -- tool agents & MCP
-    ("chapters/14-tool-agents-mcp/ku_parking_assistant.ipynb", "KU_Parking_Assistant.ipynb"),
-    ("chapters/14-tool-agents-mcp/ku_parking_mcp.ipynb",       "KU_Parking_mcp.ipynb"),
+    # Chapter 01 -- LLM basics
+    ("chapters/01-llm-basics/attention_example.ipynb",           "Attention_simple_example.ipynb"),
+    ("chapters/01-llm-basics/attention_image_analysis.ipynb",    "Attention_in_Image_Analysis.ipynb"),
+    ("chapters/01-llm-basics/embedding_example.ipynb",           "Embedding_example.ipynb"),
+    ("chapters/01-llm-basics/simple_transformers.ipynb",         "SimpleTransformers.ipynb"),
+    ("chapters/01-llm-basics/tfidf_example.ipynb",               "TFIDF_example.ipynb"),
+    ("chapters/01-llm-basics/tokenizer_examples.ipynb",          "Tokenizer_simple_examples.ipynb"),
 
-    # Add more pairs below as each chapter notebook is brought under sync.
-    # Example:
-    # ("chapters/01-llm-basics/attention_example.ipynb", "Attention_simple_example.ipynb"),
+    # Chapter 02 -- LLM providers
+    ("chapters/02-llm-providers/google_api.ipynb",               "Google_Studio_API_call.ipynb"),
+    ("chapters/02-llm-providers/groq_api.ipynb",                 "Groq_Cloud_API_Call.ipynb"),
+    ("chapters/02-llm-providers/lm_studio.ipynb",                "LMStudioAccess.ipynb"),
+    ("chapters/02-llm-providers/openai_api.ipynb",               "OpenAI_API_call.ipynb"),
+
+    # Chapter 03 -- RAG first principles
+    ("chapters/03-rag-first-principles/rag_first_principles.ipynb", "RAG_first_principles.ipynb"),
+
+    # Chapter 04 -- RAG vector databases
+    ("chapters/04-rag-vector-databases/lancedb.ipynb",                  "LanceDB_vectorDB.ipynb"),
+    ("chapters/04-rag-vector-databases/pinecone.ipynb",                 "Pinecone_vectorDB.ipynb"),
+    ("chapters/04-rag-vector-databases/rag_allcountries_chromadb.ipynb","RAG_allcountries_ChromaDB.ipynb"),
+    ("chapters/04-rag-vector-databases/rag_countries_chromadb.ipynb",   "RAG_countries_NA.ipynb"),
+    ("chapters/04-rag-vector-databases/rag_featherweight.ipynb",        "Simple_RAG_using_featherweightAI.ipynb"),
+
+    # Chapter 05 -- RAG over structured data
+    ("chapters/05-rag-structured-data/dbms_rag_sqlite.ipynb",    "DBMS_RAG_SQLite.ipynb"),
+    ("chapters/05-rag-structured-data/graph_rag_trade.ipynb",    "GRAPH_RAG_Trade.ipynb"),
+
+    # Chapter 06 -- RAG over multimedia
+    ("chapters/06-rag-multimedia/image_rag.ipynb",               "Image_RAG.ipynb"),
+    ("chapters/06-rag-multimedia/video_rag.ipynb",               "Video_RAG.ipynb"),
+
+    # Chapter 07 -- LlamaIndex
+    ("chapters/07-llamaindex/llamaindex_rag.ipynb",              "LlamaIndex_RAG.ipynb"),
+    ("chapters/07-llamaindex/llamaindex_simple.ipynb",           "LlamaIndex_RAG_simple_single_company.ipynb"),
+
+    # Chapter 08 -- LangChain
+    ("chapters/08-langchain/langchain_demo.ipynb",               "LangChain_demo.ipynb"),
+
+    # Chapter 09 -- LangGraph
+    ("chapters/09-langgraph/langgraph_demo.ipynb",               "LangGraph_demo.ipynb"),
+
+    # Chapter 10 -- Fine-tuning
+    ("chapters/10-finetuning/qlora_finetuning.ipynb",            "QLoRA_FineTuning.ipynb"),
+
+    # Chapter 11 -- Single agent
+    ("chapters/11-single-agent/single_agent_db.ipynb",           "SingleAgent_DB.ipynb"),
+
+    # Chapter 12 -- Multi-agent
+    ("chapters/12-multi-agent/multi_agent_multi_human_db.ipynb", "MultiAgent_DB_multi_human_input.ipynb"),
+    ("chapters/12-multi-agent/multi_agent_single_input.ipynb",   "MultiAgent_DB_single_human_input.ipynb"),
+
+    # Chapter 13 -- Autonomous agents
+    ("chapters/13-autonomous-agents/autonomous_agent.ipynb",     "AutonomousAgent_BusinessValidator.ipynb"),
+    ("chapters/13-autonomous-agents/autonomous_multivendor.ipynb","AutonomousAgent_multivendor.ipynb"),
+
+    # Chapter 14 -- tool agents & MCP
+    ("chapters/14-tool-agents-mcp/ku_parking_assistant.ipynb",   "KU_Parking_Assistant.ipynb"),
+    ("chapters/14-tool-agents-mcp/ku_parking_mcp.ipynb",         "KU_Parking_mcp.ipynb"),
 ]
 
 # -----------------------------------------------------------------------------

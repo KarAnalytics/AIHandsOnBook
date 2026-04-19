@@ -240,7 +240,7 @@ NOTEBOOK_MAP = [
 
     # Part V: Agents
     ("SingleAgent_DB.ipynb",                                 "chapters/11-single-agent/single_agent_db.ipynb"),
-    ("MultiAgent_DB_multi_human_input.ipynb",                "chapters/12-multi-agent/multi_agent_db.ipynb"),
+    ("MultiAgent_DB_multi_human_input.ipynb",                "chapters/12-multi-agent/multi_agent_multi_human_db.ipynb"),
     ("AutonomousAgent_BusinessValidator.ipynb",              "chapters/13-autonomous-agents/autonomous_agent.ipynb"),
     ("KU_Parking_Assistant.ipynb",                           "chapters/14-tool-agents-mcp/ku_parking_assistant.ipynb"),
     ("KU_Parking_mcp.ipynb",                                 "chapters/14-tool-agents-mcp/ku_parking_mcp.ipynb"),

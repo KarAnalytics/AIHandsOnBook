@@ -101,7 +101,7 @@ project:
       children:
         - file: chapters/12-multi-agent/intro.md
           children:
-            - file: chapters/12-multi-agent/multi_agent_db.ipynb
+            - file: chapters/12-multi-agent/multi_agent_multi_human_db.ipynb
             - file: chapters/12-multi-agent/multi_agent_single_input.ipynb
     - title: "Ch 16: Autonomous Agents"
       children:

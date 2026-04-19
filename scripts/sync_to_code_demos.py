@@ -28,25 +28,60 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
 # -----------------------------------------------------------------------------
 # Book-side -> code_demos-side transformation
 # -----------------------------------------------------------------------------
-# Chapter notebooks encode underscores in Colab badge URLs as %5F because
-# Typst (the PDF backend) escapes a literal `_` in URLs to `\_`, which then
-# gets triple-URL-encoded by Colab and breaks the "Open in Colab" button in
-# the PDF. %5F is pass-through-safe through Typst.
+# Chapter notebooks wrap each Colab badge in a MyST `:::{only} html`
+# directive so the Typst/PDF build skips it (Typst mangles underscores in
+# URLs, which Colab then double-encodes -- there is no encoding that survives
+# both steps, so we just hide the badge from the PDF).
 #
-# On the code_demos side we need the opposite: literal underscores, because
-# GitHub's "Open in Colab" shortcut re-encodes `%` -> `%25` -> `%2525` on
-# each hop and breaks if the URL already contains a %5F.
-#
-# Hence the one-way translation applied here during sync.
+# code_demos notebooks are opened directly in Colab/Jupyter, which do not
+# understand MyST directives and would render ":::{only} html" as literal
+# text. So the sync strips the directive wrapper here, leaving only the
+# badge HTML.
 
 def transform_for_code_demos(data: bytes) -> bytes:
-    return data.replace(b"%5F", b"_")
+    """Strip `:::{only} html` / `:::` wrapper lines from markdown cells.
+
+    Operates on the JSON representation so the transform is robust to
+    incidental formatting differences. Non-markdown content passes through.
+    """
+    try:
+        nb = json.loads(data)
+    except json.JSONDecodeError:
+        return data  # Not JSON -- pass through unchanged.
+
+    if not isinstance(nb, dict) or "cells" not in nb:
+        return data
+
+    changed = False
+    for cell in nb["cells"]:
+        if cell.get("cell_type") != "markdown":
+            continue
+        src = cell.get("source", [])
+        new_src = []
+        for line in src:
+            stripped = line.strip()
+            if stripped.startswith(":::{only} html") or stripped == ":::":
+                changed = True
+                continue  # drop wrapper lines
+            new_src.append(line)
+        if changed:
+            cell["source"] = new_src
+
+    if not changed:
+        return data
+
+    had_trailing_newline = data.endswith(b"\n")
+    out = json.dumps(nb, indent=1, ensure_ascii=False)
+    if had_trailing_newline and not out.endswith("\n"):
+        out += "\n"
+    return out.encode("utf-8")
 
 # -----------------------------------------------------------------------------
 # Paths
@@ -166,7 +201,7 @@ def main() -> int:
         print()
 
     # Phase 2: verify code_demos matches the transformed source (always runs)
-    print("Verifying pairs are identical (after %5F -> _ transform)...")
+    print("Verifying pairs match the book-side source (after :::{only} html strip)...")
     for src_rel, dst_name in NOTEBOOK_PAIRS:
         src = BOOK_ROOT / src_rel
         dst = CODE_DEMOS / dst_name

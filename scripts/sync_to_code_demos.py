@@ -29,53 +29,86 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
 # -----------------------------------------------------------------------------
-# Book-side -> code_demos-side transformation
+# Book-side -> code_demos-side structural transform
 # -----------------------------------------------------------------------------
-# Chapter notebooks wrap each Colab badge in a MyST `:::{only} html`
-# directive so the Typst/PDF build skips it (Typst mangles underscores in
-# URLs, which Colab then double-encodes -- there is no encoding that survives
-# both steps, so we just hide the badge from the PDF).
+# Chapter notebooks don't carry a clickable Colab badge -- they end with a
+# "## Run the code" cell that shows the Colab URL as plain code-span text
+# (no hyperlink means nothing for Typst to mangle) and has the runtime
+# blockquote right above the URL.
 #
-# code_demos notebooks are opened directly in Colab/Jupyter, which do not
-# understand MyST directives and would render ":::{only} html" as literal
-# text. So the sync strips the directive wrapper here, leaving only the
-# badge HTML.
+# code_demos notebooks live on GitHub, where readers expect a one-click
+# Colab badge + runtime at the top of the notebook. So when syncing, we:
+#
+#   1. drop the "## Run the code" cell from the end (redundant on GitHub),
+#      but first pull out the runtime blockquote from inside it, and
+#   2. insert a new cell at position 0 with the Colab badge and the
+#      runtime blockquote right below it.
+#
+# The code_demos filename drives the Colab URL, so the transform needs to
+# know which pair it's producing.
 
-def transform_for_code_demos(data: bytes) -> bytes:
-    """Strip `:::{only} html` / `:::` wrapper lines from markdown cells.
+_COLAB_BADGE_SRC = "https://colab.research.google.com/assets/colab-badge.svg"
+_RUNTIME_RE = re.compile(r"^\s*>\s*\*\*Estimated run time:\*\*")
 
-    Operates on the JSON representation so the transform is robust to
-    incidental formatting differences. Non-markdown content passes through.
-    """
+
+def _is_run_the_code_cell(cell: dict) -> bool:
+    if cell.get("cell_type") != "markdown":
+        return False
+    return any("## Run the code" in s for s in cell.get("source", []))
+
+
+def _extract_runtime_line(cell: dict) -> str | None:
+    for line in cell.get("source", []):
+        if _RUNTIME_RE.match(line):
+            return line.rstrip("\n")
+    return None
+
+
+def _badge_html(code_demos_filename: str) -> str:
+    colab_url = (
+        "https://colab.research.google.com/github/KarAnalytics/code_demos/blob/main/"
+        + code_demos_filename
+    )
+    return (
+        f'<a href="{colab_url}" target="_parent">'
+        f'<img src="{_COLAB_BADGE_SRC}" alt="Open In Colab"/></a>'
+    )
+
+
+def transform_for_code_demos(data: bytes, code_demos_filename: str) -> bytes:
     try:
         nb = json.loads(data)
     except json.JSONDecodeError:
-        return data  # Not JSON -- pass through unchanged.
-
+        return data
     if not isinstance(nb, dict) or "cells" not in nb:
         return data
 
-    changed = False
-    for cell in nb["cells"]:
-        if cell.get("cell_type") != "markdown":
-            continue
-        src = cell.get("source", [])
-        new_src = []
-        for line in src:
-            stripped = line.strip()
-            if stripped.startswith(":::{only} html") or stripped == ":::":
-                changed = True
-                continue  # drop wrapper lines
-            new_src.append(line)
-        if changed:
-            cell["source"] = new_src
+    cells = nb["cells"]
 
-    if not changed:
-        return data
+    # Pull the runtime out of the bottom "Run the code" cell before dropping it.
+    runtime_line: str | None = None
+    while cells and _is_run_the_code_cell(cells[-1]):
+        if runtime_line is None:
+            runtime_line = _extract_runtime_line(cells[-1])
+        cells.pop()
+
+    # Build the injected top cell: badge, optional runtime blockquote.
+    top_source: list[str] = [_badge_html(code_demos_filename) + "\n"]
+    if runtime_line is not None:
+        top_source.append("\n")
+        top_source.append(runtime_line + "\n")
+
+    cells.insert(0, {
+        "cell_type": "markdown",
+        "id": "colab-badge",
+        "metadata": {},
+        "source": top_source,
+    })
 
     had_trailing_newline = data.endswith(b"\n")
     out = json.dumps(nb, indent=1, ensure_ascii=False)
@@ -160,10 +193,9 @@ NOTEBOOK_PAIRS: list[tuple[str, str]] = [
 # -----------------------------------------------------------------------------
 
 
-def copy_pair(src: Path, dst: Path) -> None:
-    """Copy with book -> code_demos transformation (see transform_for_code_demos)."""
+def copy_pair(src: Path, dst: Path, code_demos_filename: str) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
-    dst.write_bytes(transform_for_code_demos(src.read_bytes()))
+    dst.write_bytes(transform_for_code_demos(src.read_bytes(), code_demos_filename))
 
 
 def main() -> int:
@@ -196,12 +228,12 @@ def main() -> int:
                 print(f"  MISSING SOURCE: {src_rel}")
                 failed = True
                 continue
-            copy_pair(src, dst)
+            copy_pair(src, dst, dst_name)
             print(f"  synced  {src_rel}  ->  code_demos/{dst_name}")
         print()
 
     # Phase 2: verify code_demos matches the transformed source (always runs)
-    print("Verifying pairs match the book-side source (after :::{only} html strip)...")
+    print("Verifying pairs match book-side source (after badge prepend / run-cell strip)...")
     for src_rel, dst_name in NOTEBOOK_PAIRS:
         src = BOOK_ROOT / src_rel
         dst = CODE_DEMOS / dst_name
@@ -213,9 +245,8 @@ def main() -> int:
             print(f"  MISSING DEST:   code_demos/{dst_name}")
             failed = True
             continue
-        expected = transform_for_code_demos(src.read_bytes())
-        actual = dst.read_bytes()
-        if expected == actual:
+        expected = transform_for_code_demos(src.read_bytes(), dst_name)
+        if expected == dst.read_bytes():
             print(f"  ok      {src_rel}")
         else:
             print(f"  DRIFT:  {src_rel}  !=  code_demos/{dst_name}")

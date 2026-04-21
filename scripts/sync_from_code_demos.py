@@ -34,9 +34,14 @@ The companion script sync_to_code_demos.py does the opposite direction
 Usage:
 
     python scripts/sync_from_code_demos.py             # pull code_demos + reverse-sync
-    python scripts/sync_from_code_demos.py --build-pdf # ... + rebuild ai-for-business.pdf
+    python scripts/sync_from_code_demos.py --build-pdf # ... + also rebuild PDF locally for preview
     python scripts/sync_from_code_demos.py --no-pull   # skip the git pull (sync current local state)
     python scripts/sync_from_code_demos.py --check     # verify only, no writes, no pull, no build
+
+Note: the PDF (ai-for-business.pdf) is rebuilt automatically by the GitHub
+Actions deploy workflow on every push, so `--build-pdf` is no longer required
+as part of the regular workflow -- it's here for local previews only (e.g.,
+when you want to eyeball the PDF before pushing).
 
 Exit code 0 on success, 1 on any pull / sync / verification / build failure.
 """
@@ -198,7 +203,9 @@ def main() -> int:
     ap.add_argument(
         "--build-pdf",
         action="store_true",
-        help="After a successful sync + verification, run `npx mystmd build --pdf`.",
+        help="After a successful sync + verification, run `npx mystmd build --pdf` "
+             "locally for preview. Not required for deployment -- CI rebuilds the PDF "
+             "on every push.",
     )
     args = ap.parse_args()
 

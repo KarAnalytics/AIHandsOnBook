@@ -5,3 +5,6 @@ __pycache__/
 code_demos/
 gitignore_materials/
 infra/**/supabase/.temp/
+
+# PDF is built in CI and deployed to Pages; don't commit local builds.
+ai-for-business.pdf

@@ -31,12 +31,20 @@ jobs:
       - name: Install mystmd
         run: npm install -g mystmd
 
-      - name: Build HTML site
+      - name: Install Typst
+        uses: typst-community/setup-typst@v3
+
+      - name: Build HTML + PDF
         # BASE_URL tells MyST to emit URLs prefixed with /AIHandsOnBook so
         # internal links resolve correctly on karanalytics.github.io/AIHandsOnBook/.
         env:
           BASE_URL: /AIHandsOnBook
-        run: myst build --html
+        run: |
+          myst build --html
+          myst build --pdf
+          # Place the PDF inside the Pages artifact so it is served at
+          # karanalytics.github.io/AIHandsOnBook/ai-for-business.pdf.
+          cp ai-for-business.pdf _build/html/
 
       - uses: actions/configure-pages@v5
 

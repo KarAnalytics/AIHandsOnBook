@@ -44,7 +44,7 @@ The following resources provide deeper conceptual coverage of the topics in this
 
 **Textbooks:**
 
-- Chen, W., & Chen, L. (2025). *Generative AI for Business: Frameworks, Techniques, and Governance*. GenAI Flows Publishing. ISBN 979-8-9997161-0-1. https://genai4all.org/book/ — Comprehensive coverage of generative AI frameworks and governance considerations for business applications.
+- Chen, W., & Chen, L. (2025). *Generative AI for Business: Frameworks, Techniques, and Governance*. GenAI Flows Publishing. ISBN 979-8-9997161-0-1. https://genai4all.org/ — Comprehensive coverage of generative AI frameworks and governance considerations for business applications.
 
 - Alammar, J., & Grootendorst, M. (2024). *Hands-On Large Language Models: Language Understanding and Generation*. O'Reilly Media. https://www.amazon.com/Hands-Large-Language-Models-Understanding/dp/1098150961 — Excellent visual explanations of transformer architectures, embeddings, and language generation.
 

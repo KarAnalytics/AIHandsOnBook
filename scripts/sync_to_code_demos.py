@@ -36,21 +36,27 @@ from pathlib import Path
 # -----------------------------------------------------------------------------
 # Book-side -> code_demos-side structural transform
 # -----------------------------------------------------------------------------
-# Chapter notebooks don't carry a clickable Colab badge -- they end with a
-# "## Run the code" cell that shows the Colab URL as plain code-span text
-# (no hyperlink means nothing for Typst to mangle) and has the runtime
-# blockquote right above the URL.
+# Under "Option A" layout:
 #
-# code_demos notebooks live on GitHub, where readers expect a one-click
-# Colab badge + runtime at the top of the notebook. So when syncing, we:
+#   Chapter:
+#     [0] `# Chapter Title`   (title-only cell)
+#     [1] intro paragraph + cross-reference
+#     [2..N-2] content
+#     [N-1] "## Run the code" cell (plain-text URL for PDF readers)
 #
-#   1. drop the "## Run the code" cell from the end (redundant on GitHub),
-#      but first pull out the runtime blockquote from inside it, and
-#   2. insert a new cell at position 0 with the Colab badge and the
-#      runtime blockquote right below it.
+#   code_demos:
+#     [0] Colab badge + runtime blockquote
+#     [1] intro paragraph + cross-reference  (== chapter[1])
+#     [2..N-2] content                       (== chapter[2..N-2])
 #
-# The code_demos filename drives the Colab URL, so the transform needs to
-# know which pair it's producing.
+# Positions 1..N-2 are identical content-wise. Chapter has an extra title
+# cell at [0] and an extra "Run the code" cell at [N-1]; code_demos has the
+# Colab badge at [0] instead.
+#
+# Forward sync (chapter -> code_demos):
+#   1. drop chapter[0] (title), drop chapter[-1] ("Run the code"),
+#      extracting the runtime blockquote from the latter.
+#   2. prepend a Colab-badge + runtime cell at position 0.
 
 _COLAB_BADGE_SRC = "https://colab.research.google.com/assets/colab-badge.svg"
 _RUNTIME_RE = re.compile(r"^\s*>\s*\*\*Estimated run time:\*\*")
@@ -60,6 +66,17 @@ def _is_run_the_code_cell(cell: dict) -> bool:
     if cell.get("cell_type") != "markdown":
         return False
     return any("## Run the code" in s for s in cell.get("source", []))
+
+
+def _is_title_only_cell(cell: dict) -> bool:
+    """True if the cell is a markdown cell containing only an H1 heading."""
+    if cell.get("cell_type") != "markdown":
+        return False
+    src = "".join(cell.get("source", [])).strip()
+    if not src.startswith("# ") or src.startswith("## "):
+        return False
+    # "only an H1" means no additional paragraph content on subsequent lines.
+    return src.count("\n") == 0
 
 
 def _extract_runtime_line(cell: dict) -> str | None:
@@ -96,6 +113,10 @@ def transform_for_code_demos(data: bytes, code_demos_filename: str) -> bytes:
         if runtime_line is None:
             runtime_line = _extract_runtime_line(cells[-1])
         cells.pop()
+
+    # Drop chapter's title-only cell (Option A layout).
+    if cells and _is_title_only_cell(cells[0]):
+        cells.pop(0)
 
     # Build the injected top cell: badge, optional runtime blockquote.
     top_source: list[str] = [_badge_html(code_demos_filename) + "\n"]

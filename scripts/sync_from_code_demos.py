@@ -33,11 +33,12 @@ The companion script sync_to_code_demos.py does the opposite direction
 
 Usage:
 
-    python scripts/sync_from_code_demos.py           # pull code_demos + reverse-sync
-    python scripts/sync_from_code_demos.py --no-pull # skip the git pull (sync current local state)
-    python scripts/sync_from_code_demos.py --check   # verify only, no writes, no pull
+    python scripts/sync_from_code_demos.py             # pull code_demos + reverse-sync
+    python scripts/sync_from_code_demos.py --build-pdf # ... + rebuild ai-for-business.pdf
+    python scripts/sync_from_code_demos.py --no-pull   # skip the git pull (sync current local state)
+    python scripts/sync_from_code_demos.py --check     # verify only, no writes, no pull, no build
 
-Exit code 0 on success, 1 on any pull failure / missing source / drift / error.
+Exit code 0 on success, 1 on any pull / sync / verification / build failure.
 """
 
 from __future__ import annotations
@@ -166,6 +167,22 @@ def _git_pull_code_demos() -> bool:
     return True
 
 
+def _build_pdf() -> bool:
+    """Run `npx mystmd build --pdf` in the book root. Stream output as-is."""
+    print("Building PDF (npx mystmd build --pdf)...")
+    # shell=True so npx resolves correctly on Windows where it's npx.cmd.
+    proc = subprocess.run(
+        "npx mystmd build --pdf",
+        shell=True,
+        cwd=str(BOOK_ROOT),
+    )
+    if proc.returncode != 0:
+        print(f"  PDF build FAILED (exit {proc.returncode})", file=sys.stderr)
+        return False
+    print("  PDF build OK.")
+    return True
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
@@ -177,6 +194,11 @@ def main() -> int:
         "--no-pull",
         action="store_true",
         help="Skip `git pull` on code_demos/ before syncing (use current local state).",
+    )
+    ap.add_argument(
+        "--build-pdf",
+        action="store_true",
+        help="After a successful sync + verification, run `npx mystmd build --pdf`.",
     )
     args = ap.parse_args()
 
@@ -236,6 +258,14 @@ def main() -> int:
         print("Reverse sync FAILED -- see messages above.")
         return 1
     print("Reverse sync OK.")
+
+    # Optional: rebuild the PDF. Only run if everything above succeeded and the
+    # user asked for it via --build-pdf.
+    if args.build_pdf and not args.check:
+        print()
+        if not _build_pdf():
+            return 1
+
     return 0
 
 

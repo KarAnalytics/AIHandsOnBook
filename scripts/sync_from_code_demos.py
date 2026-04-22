@@ -133,20 +133,37 @@ def reverse_transform(
     # Extract runtime from code_demos[0] before we discard it.
     runtime_line = _extract_runtime_line(cd_cells[0]) if cd_cells else None
 
-    # Preserve chapter-level metadata if the file already exists.
+    # Preserve chapter-level metadata and existing title (if any) — the
+    # existing title is used as a fallback when code_demos[1] is not a
+    # proper title cell (e.g., after Colab auto-injects a view-in-github
+    # badge that shifts the title out of position).
+    existing_title = None
     if existing_chapter_bytes is not None:
         existing = json.loads(existing_chapter_bytes)
         meta = existing.get("metadata", {})
+        if existing.get("cells") and _looks_like_title_cell(existing["cells"][0]):
+            existing_title = existing["cells"][0]
     else:
         meta = {}
 
     # Build new chapter cells: code_demos[1..N-1] (title + intro + content),
     # followed by a regenerated Run-the-code cell.
-    # If code_demos doesn't yet have a title at [1] (pre-migration state),
-    # synthesize one so the chapter remains well-formed.
+    #
+    # Scan body for a title cell rather than assuming it is at [0]. Colab
+    # round-trips sometimes leave junk between the badge and the title — an
+    # auto-injected duplicate `view-in-github` badge, or a runtime blockquote
+    # that got split out of cell 0. Dropping anything before the first title
+    # cell cleans up that drift in-place. If no title is found, fall back to
+    # the chapter's existing title, or a filename-based placeholder for
+    # brand-new notebooks.
     body = list(cd_cells[1:])
-    if not body or not _looks_like_title_cell(body[0]):
-        body.insert(0, _title_cell_fallback(code_demos_filename))
+    title_idx = next(
+        (i for i, c in enumerate(body) if _looks_like_title_cell(c)), None
+    )
+    if title_idx is not None:
+        body = body[title_idx:]
+    else:
+        body.insert(0, existing_title or _title_cell_fallback(code_demos_filename))
     body.append(_run_the_code_cell(code_demos_filename, runtime_line))
 
     out_nb = {

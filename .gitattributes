@@ -1,0 +1,19 @@
+# Enforce LF line endings for all text files, regardless of OS.
+# Prevents Windows editors / Git autocrlf from introducing CRLF, which
+# would produce noisy diffs and break byte-exact sync comparisons.
+* text=auto eol=lf
+
+# Explicit binary declarations (belt-and-suspenders; text=auto usually
+# detects these, but being explicit removes any ambiguity).
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.pdf  binary
+*.mp4  binary
+*.mov  binary
+*.webm binary
+*.zip  binary
+*.tar  binary
+*.gz   binary

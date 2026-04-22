@@ -36,7 +36,7 @@ from pathlib import Path
 # -----------------------------------------------------------------------------
 # Book-side -> code_demos-side structural transform
 # -----------------------------------------------------------------------------
-# Under "Option A" layout:
+# Layout:
 #
 #   Chapter:
 #     [0] `# Chapter Title`   (title-only cell)
@@ -46,43 +46,38 @@ from pathlib import Path
 #
 #   code_demos:
 #     [0] Colab badge + runtime blockquote
-#     [1] intro paragraph + cross-reference  (== chapter[1])
-#     [2..N-2] content                       (== chapter[2..N-2])
+#     [1] `# Chapter Title`   (== chapter[0])
+#     [2] intro paragraph + cross-reference  (== chapter[1])
+#     [3..N-1] content                       (== chapter[2..N-2])
 #
-# Positions 1..N-2 are identical content-wise. Chapter has an extra title
-# cell at [0] and an extra "Run the code" cell at [N-1]; code_demos has the
-# Colab badge at [0] instead.
+# Chapter positions 0..N-2 map straight to code_demos positions 1..N-1.
+# Chapter has an extra "Run the code" cell at [N-1] (PDF readers); code_demos
+# has the Colab badge at [0] instead. The title cell is kept on both sides so
+# a Colab reader lands on a properly-titled notebook.
 #
 # Forward sync (chapter -> code_demos):
-#   1. drop chapter[0] (title), drop chapter[-1] ("Run the code"),
-#      extracting the runtime blockquote from the latter.
+#   1. drop chapter[-1] ("Run the code"), extracting the runtime blockquote.
 #   2. prepend a Colab-badge + runtime cell at position 0.
+#   (The title cell at chapter[0] is carried through to code_demos[1].)
 
 _COLAB_BADGE_SRC = "https://colab.research.google.com/assets/colab-badge.svg"
 _RUNTIME_RE = re.compile(r"^\s*>\s*\*\*Estimated run time:\*\*")
 
 
 def _is_run_the_code_cell(cell: dict) -> bool:
+    # Join source before searching: some legacy notebooks have source stored
+    # as a list of one-character strings instead of lines, which defeats
+    # a per-element substring check.
     if cell.get("cell_type") != "markdown":
         return False
-    return any("## Run the code" in s for s in cell.get("source", []))
-
-
-def _is_title_only_cell(cell: dict) -> bool:
-    """True if the cell is a markdown cell containing only an H1 heading."""
-    if cell.get("cell_type") != "markdown":
-        return False
-    src = "".join(cell.get("source", [])).strip()
-    if not src.startswith("# ") or src.startswith("## "):
-        return False
-    # "only an H1" means no additional paragraph content on subsequent lines.
-    return src.count("\n") == 0
+    return "## Run the code" in "".join(cell.get("source", []))
 
 
 def _extract_runtime_line(cell: dict) -> str | None:
-    for line in cell.get("source", []):
+    text = "".join(cell.get("source", []))
+    for line in text.splitlines():
         if _RUNTIME_RE.match(line):
-            return line.rstrip("\n")
+            return line
     return None
 
 
@@ -114,9 +109,8 @@ def transform_for_code_demos(data: bytes, code_demos_filename: str) -> bytes:
             runtime_line = _extract_runtime_line(cells[-1])
         cells.pop()
 
-    # Drop chapter's title-only cell (Option A layout).
-    if cells and _is_title_only_cell(cells[0]):
-        cells.pop(0)
+    # The title cell at chapter[0] is preserved (it carries through to
+    # code_demos[1], right below the injected Colab badge).
 
     # Build the injected top cell: badge, optional runtime blockquote.
     top_source: list[str] = [_badge_html(code_demos_filename) + "\n"]

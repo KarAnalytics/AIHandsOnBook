@@ -7,25 +7,25 @@ push those edits to the code_demos repo, run this script to flow those edits
 back into the corresponding chapter notebook. This is the primary sync
 direction when the live Colab session is where authoring happens.
 
-Layout (Option A):
+Layout:
 
   Chapter:
-    [0] `# Chapter Title`                 (preserved -- not in code_demos)
-    [1] intro paragraph + cross-reference (== code_demos[1])
-    [2..N-2] content                      (== code_demos[2..N-2])
+    [0] `# Chapter Title`                 (== code_demos[1])
+    [1] intro paragraph + cross-reference (== code_demos[2])
+    [2..N-2] content                      (== code_demos[3..N-1])
     [N-1] "## Run the code" cell          (regenerated with extracted runtime)
 
   code_demos:
     [0] Colab badge + runtime blockquote  (dropped + runtime extracted)
-    [1..N-1] intro, content               (copied straight over)
+    [1] `# Chapter Title`                 (copied straight over)
+    [2..N-1] intro, content               (copied straight over)
 
 What the reverse sync does, per notebook pair:
 
   1. Load code_demos/<name>.ipynb and the existing chapter notebook.
-  2. Preserve the chapter's cell 0 (title) as-is.
-  3. Extract the runtime blockquote from code_demos[0] (the badge cell).
-  4. Replace chapter[1..N-1] with code_demos[1..N-1].
-  5. Append a fresh "## Run the code" cell at the bottom, using the
+  2. Extract the runtime blockquote from code_demos[0] (the badge cell).
+  3. Replace chapter cells with code_demos[1..N-1] (title + intro + content).
+  4. Append a fresh "## Run the code" cell at the bottom, using the
      extracted runtime and the known Colab URL for that notebook.
 
 The companion script sync_to_code_demos.py does the opposite direction
@@ -66,10 +66,18 @@ _RUNTIME_RE = re.compile(r"^\s*>\s*\*\*Estimated run time:\*\*")
 
 
 def _extract_runtime_line(cell: dict) -> str | None:
-    for line in cell.get("source", []):
+    text = "".join(cell.get("source", []))
+    for line in text.splitlines():
         if _RUNTIME_RE.match(line):
-            return line.rstrip("\n")
+            return line
     return None
+
+
+def _looks_like_title_cell(cell: dict) -> bool:
+    if cell.get("cell_type") != "markdown":
+        return False
+    src = "".join(cell.get("source", [])).strip()
+    return src.startswith("# ") and not src.startswith("## ")
 
 
 def _run_the_code_cell(code_demos_filename: str, runtime_line: str | None) -> dict:
@@ -125,23 +133,24 @@ def reverse_transform(
     # Extract runtime from code_demos[0] before we discard it.
     runtime_line = _extract_runtime_line(cd_cells[0]) if cd_cells else None
 
-    # Preserve chapter's cell 0 (title) if the chapter file exists.
+    # Preserve chapter-level metadata if the file already exists.
     if existing_chapter_bytes is not None:
         existing = json.loads(existing_chapter_bytes)
-        title_cell = existing["cells"][0] if existing.get("cells") else _title_cell_fallback(code_demos_filename)
         meta = existing.get("metadata", {})
     else:
-        title_cell = _title_cell_fallback(code_demos_filename)
         meta = {}
 
-    # Build the new chapter cells:
-    #   [0] preserved title + [1..N-1] from code_demos[1..N-1] + regenerated Run-the-code cell
-    new_cells: list[dict] = [title_cell]
-    new_cells.extend(cd_cells[1:])  # everything after the badge cell
-    new_cells.append(_run_the_code_cell(code_demos_filename, runtime_line))
+    # Build new chapter cells: code_demos[1..N-1] (title + intro + content),
+    # followed by a regenerated Run-the-code cell.
+    # If code_demos doesn't yet have a title at [1] (pre-migration state),
+    # synthesize one so the chapter remains well-formed.
+    body = list(cd_cells[1:])
+    if not body or not _looks_like_title_cell(body[0]):
+        body.insert(0, _title_cell_fallback(code_demos_filename))
+    body.append(_run_the_code_cell(code_demos_filename, runtime_line))
 
     out_nb = {
-        "cells": new_cells,
+        "cells": body,
         "metadata": meta,
         "nbformat": cd.get("nbformat", 4),
         "nbformat_minor": cd.get("nbformat_minor", 5),

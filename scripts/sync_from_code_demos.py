@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
 """
-sync_from_code_demos.py -- REVERSE sync: code_demos -> chapter.
+sync_from_code_demos.py -- BIDIRECTIONAL sync driven from code_demos.
 
 When you edit a notebook live on Colab (via the code_demos GitHub link) and
 push those edits to the code_demos repo, run this script to flow those edits
-back into the corresponding chapter notebook. This is the primary sync
-direction when the live Colab session is where authoring happens.
+back into the corresponding chapter notebook -- and then back out to code_demos
+one more time to normalize any cosmetic drift Colab introduced on save (most
+commonly a duplicate `view-in-github` badge).
+
+Default end-to-end flow (one command):
+
+  1. `git pull` on code_demos/ to grab your latest Colab save.
+  2. Reverse sync:  code_demos -> chapter   (pulls your edits into the book).
+  3. Forward sync:  chapter -> code_demos   (writes a clean canonical copy
+     back over code_demos, wiping Colab drift like duplicate badges).
+  4. Round-trip verification (should always pass after step 3).
 
 Layout:
 
@@ -20,23 +29,13 @@ Layout:
     [1] `# Chapter Title`                 (copied straight over)
     [2..N-1] intro, content               (copied straight over)
 
-What the reverse sync does, per notebook pair:
-
-  1. Load code_demos/<name>.ipynb and the existing chapter notebook.
-  2. Extract the runtime blockquote from code_demos[0] (the badge cell).
-  3. Replace chapter cells with code_demos[1..N-1] (title + intro + content).
-  4. Append a fresh "## Run the code" cell at the bottom, using the
-     extracted runtime and the known Colab URL for that notebook.
-
-The companion script sync_to_code_demos.py does the opposite direction
-(chapter -> code_demos) for the rarer case of editing chapters directly.
-
 Usage:
 
-    python scripts/sync_from_code_demos.py             # pull code_demos + reverse-sync
-    python scripts/sync_from_code_demos.py --build-pdf # ... + also rebuild PDF locally for preview
-    python scripts/sync_from_code_demos.py --no-pull   # skip the git pull (sync current local state)
-    python scripts/sync_from_code_demos.py --check     # verify only, no writes, no pull, no build
+    python scripts/sync_from_code_demos.py                    # pull + reverse + forward sync
+    python scripts/sync_from_code_demos.py --build-pdf        # ... + also rebuild PDF locally for preview
+    python scripts/sync_from_code_demos.py --no-pull          # skip the git pull (use current local state)
+    python scripts/sync_from_code_demos.py --no-forward-sync  # reverse sync only; leave code_demos alone
+    python scripts/sync_from_code_demos.py --check            # verify round-trip only; no writes, no pull, no build
 
 Note: the PDF (ai-for-business.pdf) is rebuilt automatically by the GitHub
 Actions deploy workflow on every push, so `--build-pdf` is no longer required
@@ -230,6 +229,14 @@ def main() -> int:
         help="Skip `git pull` on code_demos/ before syncing (use current local state).",
     )
     ap.add_argument(
+        "--no-forward-sync",
+        action="store_true",
+        help="After the reverse sync, skip the default forward sync that normalizes "
+             "code_demos. With this flag the script behaves like the legacy "
+             "reverse-only command: drift in code_demos (e.g. Colab-injected duplicate "
+             "badges) stays put and surfaces as a verification failure.",
+    )
+    ap.add_argument(
         "--build-pdf",
         action="store_true",
         help="After a successful sync + verification, run `npx mystmd build --pdf` "
@@ -265,10 +272,28 @@ def main() -> int:
             print(f"  synced  code_demos/{code_demos_name}  ->  {chapter_rel}")
         print()
 
+    # Forward sync phase: normalize code_demos with a clean chapter->code_demos
+    # rewrite. This wipes Colab-injected drift (duplicate badges, etc.) so the
+    # round-trip verification below always passes after a successful reverse sync.
+    # Skipped under --check (read-only) or --no-forward-sync (legacy behavior).
+    from sync_to_code_demos import transform_for_code_demos  # local import after write
+    if not args.check and not args.no_forward_sync:
+        print(f"Forward-syncing {len(NOTEBOOK_PAIRS)} notebook(s) back to code_demos/ (normalize drift)")
+        for chapter_rel, code_demos_name in NOTEBOOK_PAIRS:
+            chapter_path = BOOK_ROOT / chapter_rel
+            cd_path = CODE_DEMOS / code_demos_name
+            if not chapter_path.is_file():
+                # Already reported as MISSING SOURCE in reverse sync; skip here.
+                continue
+            new_bytes = transform_for_code_demos(chapter_path.read_bytes(), code_demos_name)
+            cd_path.parent.mkdir(parents=True, exist_ok=True)
+            cd_path.write_bytes(new_bytes)
+            print(f"  normalized  code_demos/{code_demos_name}")
+        print()
+
     # Verification phase: confirm that re-applying the FORWARD transform to the
     # chapter reproduces the code_demos bytes. That catches drift in either
     # direction and gives confidence the two halves are consistent.
-    from sync_to_code_demos import transform_for_code_demos  # local import after write
     print("Verifying round-trip (chapter --forward-transform-> code_demos)...")
     for chapter_rel, code_demos_name in NOTEBOOK_PAIRS:
         chapter_path = BOOK_ROOT / chapter_rel
@@ -291,9 +316,9 @@ def main() -> int:
     print()
 
     if failed:
-        print("Reverse sync FAILED -- see messages above.")
+        print("Sync FAILED -- see messages above.")
         return 1
-    print("Reverse sync OK.")
+    print("Sync OK.")
 
     # Optional: rebuild the PDF. Only run if everything above succeeded and the
     # user asked for it via --build-pdf.

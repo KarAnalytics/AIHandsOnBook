@@ -49,7 +49,7 @@ For business practitioners, this divide creates a practical decision: use propri
 
 The progression of AI capabilities can be viewed across five distinct levels. Level 1 is conversational chatbots. Level 2 is reasoners capable of human-level problem solving. Level 3 is agents that can take autonomous actions. Level 4 is innovators that aid in invention. Level 5 is systems complex enough to do the work of entire organizations.
 
-We are currently sitting between Level 2 and Level 3 — moving beyond models that merely talk to us and stepping into the era of agentic AI, where systems can think, plan, and act. Chapters 16 through 19 of this book trace this progression: from single-agent systems that handle one workflow, to multi-agent architectures with specialized roles, to fully autonomous agents that plan their own research, and finally to tool-using agents connected to real-world services via the Model Context Protocol.
+We are currently sitting between Level 2 and Level 3 — moving beyond models that merely talk to us and stepping into the era of agentic AI, where systems can think, plan, and act. Chapters 16 through 18 of this book trace this progression: from agentic systems that pair single-agent and multi-agent designs, to fully autonomous agents that plan their own research, and finally to tool-using agents connected to real-world services via the Model Context Protocol.
 
 ## The Path Ahead
 

@@ -25,7 +25,7 @@ DEMOS_DIR = BOOK_DIR.parent  # ClassDemos_Antigravity
 
 # ---- Chapter intro content ----
 CHAPTER_INTROS = {
-    "chapters/01-llm-basics/intro.md": """# LLM Foundations
+    "chapters/llm-foundations/intro.md": """# LLM Foundations
 
 Before building applications, you need to understand how LLMs process text. This chapter covers the four building blocks:
 
@@ -37,7 +37,7 @@ Before building applications, you need to understand how LLMs process text. This
 Each notebook is self-contained and runs on Google Colab.
 """,
 
-    "chapters/02-llm-providers/intro.md": """# Calling LLMs: Providers and Fallback
+    "chapters/llm-providers/intro.md": """# Calling LLMs: Providers and Fallback
 
 LLMs are accessed via APIs from providers like OpenAI, Google (Gemini), Groq, and others. Each has different models, pricing, rate limits, and capabilities.
 
@@ -48,21 +48,21 @@ This chapter introduces the `llm_cascade` package — a simple Python library th
 - **Automatic fallback:** if Gemini returns 429, the next call goes to Groq (or whichever is next)
 """,
 
-    "chapters/03-rag-first-principles/intro.md": """# RAG from First Principles
+    "chapters/rag-first-principles/intro.md": """# RAG from First Principles
 
 Retrieval-Augmented Generation (RAG) is the most important technique for grounding LLM answers in your own data. Instead of hoping the LLM memorized the right facts during training, you *retrieve* relevant documents and *stuff* them into the prompt.
 
 This chapter builds a complete RAG pipeline from scratch — no frameworks, no abstractions. You'll implement every step manually: chunking, embedding, vector search, prompt construction, and generation. This gives you the deepest understanding of what frameworks like LlamaIndex and LangChain do under the hood.
 """,
 
-    "chapters/04-rag-vector-databases/intro.md": """# RAG with Vector Databases
+    "chapters/rag-vector-databases/intro.md": """# RAG with Vector Databases
 
 The previous chapter built RAG from scratch with numpy arrays. In practice, you use a **vector database** to store and search embeddings efficiently. This chapter explores ChromaDB — a popular open-source vector database — applied to real-world datasets.
 
 You'll see how the same retrieve-augment-generate pattern scales from a few documents to hundreds, and how ChromaDB handles the embedding storage, indexing, and similarity search automatically.
 """,
 
-    "chapters/05-rag-structured-data/intro.md": """# RAG with Structured Data
+    "chapters/rag-structured-data/intro.md": """# RAG with Structured Data
 
 RAG isn't limited to text documents. When your data lives in a **SQL database** or a **graph database**, the "retrieval" step becomes a query (SQL or Cypher) rather than a vector search.
 
@@ -73,7 +73,7 @@ This chapter covers two variants:
 Both follow the same pattern: retrieve evidence → stuff into prompt → generate answer. Only the retrieval mechanism changes.
 """,
 
-    "chapters/06-rag-multimedia/intro.md": """# RAG with Images and Video
+    "chapters/rag-multimedia/intro.md": """# RAG with Images and Video
 
 RAG can also work with visual content. Instead of embedding text, we embed **images** (and video frames) using CLIP — a model that maps both text and images into the same vector space.
 
@@ -84,14 +84,14 @@ This chapter builds:
 The same retrieve-augment-generate pattern applies — just with pixels instead of paragraphs.
 """,
 
-    "chapters/07-llamaindex/intro.md": """# LlamaIndex
+    "chapters/llamaindex/intro.md": """# LlamaIndex
 
 LlamaIndex is a framework that abstracts the entire RAG pipeline into a few lines of code. Where earlier chapters built everything manually (chunking, embedding, retrieval, prompting), LlamaIndex handles it all with `SimpleDirectoryReader` + `VectorStoreIndex` + `query_engine`.
 
 This chapter demonstrates LlamaIndex with three fictional company document sets, showing how the framework automatically routes questions to the correct company's documents.
 """,
 
-    "chapters/08-langchain/intro.md": """# LangChain
+    "chapters/langchain/intro.md": """# LangChain
 
 LangChain is a modular toolkit for building LLM applications. Unlike LlamaIndex (which is opinionated about how RAG should work), LangChain gives you explicit control over each step: document loaders, text splitters, embeddings, vector stores, and chains.
 
@@ -101,7 +101,7 @@ This chapter covers:
 - **Agents with tools** — LLMs that decide which functions to call, implemented with LCEL pipes
 """,
 
-    "chapters/09-langgraph/intro.md": """# LangGraph
+    "chapters/langgraph/intro.md": """# LangGraph
 
 LangGraph extends LangChain with **stateful graphs** — pipelines where each step is a visible node connected by edges, and the state flows explicitly between them. This chapter demonstrates three increasingly complex graph patterns:
 
@@ -112,7 +112,7 @@ LangGraph extends LangChain with **stateful graphs** — pipelines where each st
 Each pattern includes a graph visualization and a state trace showing how data flows through the nodes.
 """,
 
-    "chapters/10-finetuning/intro.md": """# Fine-Tuning with QLoRA
+    "chapters/finetuning/intro.md": """# Fine-Tuning with QLoRA
 
 When RAG isn't enough — when you need the model to learn a new *style*, *tone*, or *core knowledge* — you fine-tune it. QLoRA (Quantized Low-Rank Adaptation) makes this possible on a free Colab T4 GPU by:
 
@@ -123,14 +123,14 @@ When RAG isn't enough — when you need the model to learn a new *style*, *tone*
 This chapter fine-tunes a small model on fictional company data and shows a side-by-side before/after comparison.
 """,
 
-    "chapters/11-single-agent/intro.md": """# Single-Agent Systems
+    "chapters/agentic-systems/intro.md": """# Single-Agent Systems
 
 An "agent" is an LLM that can use tools — functions it calls to fetch data, run calculations, or interact with external systems. The simplest agent is a single LLM with a single system prompt that handles the entire workflow.
 
 This chapter builds a single-agent database assistant: upload an Excel file, the agent designs a schema, creates a SQLite database, and answers business questions via SQL. One agent, multiple tasks, one system prompt.
 """,
 
-    "chapters/12-multi-agent/intro.md": """# Multi-Agent Systems
+    "chapters/agentic-systems/intro.md": """# Multi-Agent Systems
 
 When one agent isn't enough, you split the work across multiple specialized agents — each with its own system prompt, its own narrow expertise, and a defined handoff protocol.
 
@@ -144,7 +144,7 @@ This chapter builds a five-agent system that:
 The key question this chapter addresses: *when is multi-agent specialization actually worth the added complexity?*
 """,
 
-    "chapters/13-autonomous-agents/intro.md": """# Autonomous Agents
+    "chapters/autonomous-agents/intro.md": """# Autonomous Agents
 
 Previous chapters used agents with predefined workflows — humans decided the pipeline, agents just filled the roles. An **autonomous agent** takes a high-level goal and figures out the steps itself.
 
@@ -157,7 +157,7 @@ This chapter builds a Business Idea Validator that autonomously:
 No human tells it what questions to ask — the LLM decides the entire workflow from a one-sentence goal.
 """,
 
-    "chapters/14-tool-agents-mcp/intro.md": """# Tool-Using Agents and MCP
+    "chapters/tool-agents-mcp/intro.md": """# Tool-Using Agents and MCP
 
 This chapter brings together tools, agents, and the **Model Context Protocol (MCP)** — the standard for exposing tools to LLMs as reusable services.
 
@@ -172,7 +172,7 @@ Two notebooks contrast:
 - **MCP tools** — tools accessed over HTTPS from the Supabase cloud endpoint
 """,
 
-    "chapters/15-deployment/intro.md": """# Deployment and No-Code
+    "chapters/deployment/intro.md": """# Deployment and No-Code
 
 The final chapter takes AI from notebooks to production:
 
@@ -183,7 +183,7 @@ These sections show that the concepts from earlier chapters (RAG, tools, agents)
 """,
 
     # Placeholder sections for deployment sub-chapters
-    "chapters/15-deployment/mcp_supabase.md": """# MCP Servers on Supabase
+    "chapters/deployment/mcp_supabase.md": """# MCP Servers on Supabase
 
 Deploying tools as a cloud-hosted MCP server gives every client (notebooks, web apps, Dify, Claude Desktop) access to the same tools via a standard HTTPS interface.
 
@@ -197,7 +197,7 @@ supabase functions deploy ku-parking --no-verify-jwt
 ```
 """,
 
-    "chapters/15-deployment/dify_workflow.md": """# No-Code AI with Dify
+    "chapters/deployment/dify_workflow.md": """# No-Code AI with Dify
 
 Dify is a visual LLM application builder. This section shows how to replicate two of our notebook-based applications in Dify without writing any code:
 
@@ -213,37 +213,37 @@ Step-by-step instructions are included in the respective notebook markdown secti
 # Maps (source_relative_path, destination_chapter_filename)
 NOTEBOOK_MAP = [
     # Part I: Foundations
-    ("Tokenizer_simple_examples.ipynb",                      "chapters/01-llm-basics/tokenizer_examples.ipynb"),
-    ("Embedding_example.ipynb",                              "chapters/01-llm-basics/embedding_example.ipynb"),
-    ("TFIDF_example.ipynb",                                  "chapters/01-llm-basics/tfidf_example.ipynb"),
-    ("Attention_simple_example.ipynb",                       "chapters/01-llm-basics/attention_example.ipynb"),
+    ("Tokenizer_simple_examples.ipynb",                      "chapters/llm-foundations/tokenizer_examples.ipynb"),
+    ("Embedding_example.ipynb",                              "chapters/llm-foundations/embedding_example.ipynb"),
+    ("TFIDF_example.ipynb",                                  "chapters/llm-foundations/tfidf_example.ipynb"),
+    ("Attention_simple_example.ipynb",                       "chapters/llm-foundations/attention_example.ipynb"),
     # llm_cascade is a markdown page, not a notebook
-    ("chapters/02-llm-providers/llm_cascade.md",             None),  # written below
+    ("chapters/llm-providers/llm_cascade.md",             None),  # written below
 
     # Part II: RAG
-    ("RAG_first_principles.ipynb",                           "chapters/03-rag-first-principles/rag_first_principles.ipynb"),
-    ("RAG_countries_NA.ipynb",                               "chapters/04-rag-vector-databases/rag_countries_chromadb.ipynb"),
-    ("RAG_allcountries_ChromaDB.ipynb",                      "chapters/04-rag-vector-databases/rag_allcountries_chromadb.ipynb"),
-    ("Simple_RAG_using_featherweightAI.ipynb",               "chapters/04-rag-vector-databases/rag_featherweight.ipynb"),
-    ("DBMS_RAG_SQLite.ipynb",                                "chapters/05-rag-structured-data/dbms_rag_sqlite.ipynb"),
-    ("GRAPH_RAG_Trade.ipynb",                                "chapters/05-rag-structured-data/graph_rag_trade.ipynb"),
-    ("Image_RAG.ipynb",                                      "chapters/06-rag-multimedia/image_rag.ipynb"),
-    ("Video_RAG.ipynb",                                      "chapters/06-rag-multimedia/video_rag.ipynb"),
+    ("RAG_first_principles.ipynb",                           "chapters/rag-first-principles/rag_first_principles.ipynb"),
+    ("RAG_countries_NA.ipynb",                               "chapters/rag-vector-databases/rag_countries_chromadb.ipynb"),
+    ("RAG_allcountries_ChromaDB.ipynb",                      "chapters/rag-vector-databases/rag_allcountries_chromadb.ipynb"),
+    ("Simple_RAG_using_featherweightAI.ipynb",               "chapters/rag-vector-databases/rag_featherweight.ipynb"),
+    ("DBMS_RAG_SQLite.ipynb",                                "chapters/rag-structured-data/dbms_rag_sqlite.ipynb"),
+    ("GRAPH_RAG_Trade.ipynb",                                "chapters/rag-structured-data/graph_rag_trade.ipynb"),
+    ("Image_RAG.ipynb",                                      "chapters/rag-multimedia/image_rag.ipynb"),
+    ("Video_RAG.ipynb",                                      "chapters/rag-multimedia/video_rag.ipynb"),
 
     # Part III: RAG Frameworks
-    ("LlamaIndex_RAG.ipynb",                                 "chapters/07-llamaindex/llamaindex_rag.ipynb"),
-    ("LangChain_demo.ipynb",                                 "chapters/08-langchain/langchain_demo.ipynb"),
-    ("LangGraph_demo.ipynb",                                 "chapters/09-langgraph/langgraph_demo.ipynb"),
+    ("LlamaIndex_RAG.ipynb",                                 "chapters/llamaindex/llamaindex_rag.ipynb"),
+    ("LangChain_demo.ipynb",                                 "chapters/langchain/langchain_demo.ipynb"),
+    ("LangGraph_demo.ipynb",                                 "chapters/langgraph/langgraph_demo.ipynb"),
 
     # Part IV: Fine-Tuning
-    ("QLoRA_FineTuning.ipynb",                               "chapters/10-finetuning/qlora_finetuning.ipynb"),
+    ("QLoRA_FineTuning.ipynb",                               "chapters/finetuning/qlora_finetuning.ipynb"),
 
     # Part V: Agents
-    ("SingleAgent_DB.ipynb",                                 "chapters/11-single-agent/single_agent_db.ipynb"),
-    ("MultiAgent_DB_multi_human_input.ipynb",                "chapters/12-multi-agent/multi_agent_multi_human_db.ipynb"),
-    ("AutonomousAgent_BusinessValidator.ipynb",              "chapters/13-autonomous-agents/autonomous_agent.ipynb"),
-    ("KU_Parking_Assistant.ipynb",                           "chapters/14-tool-agents-mcp/ku_parking_assistant.ipynb"),
-    ("KU_Parking_mcp.ipynb",                                 "chapters/14-tool-agents-mcp/ku_parking_mcp.ipynb"),
+    ("SingleAgent_DB.ipynb",                                 "chapters/agentic-systems/single_agent_db.ipynb"),
+    ("MultiAgent_DB_multi_human_input.ipynb",                "chapters/agentic-systems/multi_agent_multi_human_db.ipynb"),
+    ("AutonomousAgent_BusinessValidator.ipynb",              "chapters/autonomous-agents/autonomous_agent.ipynb"),
+    ("KU_Parking_Assistant.ipynb",                           "chapters/tool-agents-mcp/ku_parking_assistant.ipynb"),
+    ("KU_Parking_mcp.ipynb",                                 "chapters/tool-agents-mcp/ku_parking_mcp.ipynb"),
 ]
 
 # ---- llm_cascade chapter (markdown, not a notebook) ----

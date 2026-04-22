@@ -18,9 +18,9 @@ If you already have a working knowledge of AI and are looking for starter code o
 
 - Need to build a document Q&A system? Start with Chapter 8 (RAG from First Principles) or Chapter 12 (LlamaIndex).
 - Need to query a SQL database with natural language? Go to Chapter 10 (RAG with Structured Data).
-- Need to build a multi-agent workflow? Chapters 16–19 cover single-agent, multi-agent, autonomous, and tool-using architectures.
+- Need to build an agent-based workflow? Chapters 16–18 cover agentic, autonomous, and tool-using architectures.
 - Need to fine-tune a model on company-specific data? Chapter 15 (QLoRA) has a complete working example.
-- Need to deploy an AI tool as a cloud service? Chapter 20 covers MCP servers on Supabase and no-code workflows with Dify.
+- Need to deploy an AI tool as a cloud service? Chapter 19 covers MCP servers on Supabase and no-code workflows with Dify.
 
 Each notebook is self-contained — you can run it independently without working through the preceding chapters. The `llm_cascade` package handles API key management and provider fallback, so you only need to set one API key to get any notebook running. See Chapter 4 for step-by-step instructions on acquiring a free API key and storing it in Colab or a local `.env` file.
 

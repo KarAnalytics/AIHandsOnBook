@@ -18,10 +18,10 @@ Scrape product reviews from a public dataset, embed them, and build a system tha
 **SQL Business Intelligence Assistant** (Chapters 10, 16)
 Connect to a real database (your company's data warehouse, a public dataset, or a Kaggle dataset loaded into SQLite) and build a text-to-SQL system. Users ask business questions in plain English; the system generates SQL, executes it, and explains the results.
 
-**Internal Knowledge Base with Access Control** (Chapters 9, 12, 20)
+**Internal Knowledge Base with Access Control** (Chapters 9, 12, 19)
 Build a RAG system over internal company documents with role-based access. HR documents are only retrievable by HR staff; engineering docs by engineers. Deploy as a Dify workflow with authentication. This teaches RAG at a production level.
 
-**Competitive Intelligence Monitor** (Chapters 8, 9, 18)
+**Competitive Intelligence Monitor** (Chapters 8, 9, 17)
 Scrape competitor websites and press releases periodically, chunk and embed them, and build a RAG system that answers questions like "What did Competitor X announce this quarter?" Use a local LLM for privacy if the competitive data is sensitive.
 
 **Multi-Format Document Q&A** (Chapters 8, 9, 10, 11)
@@ -29,10 +29,10 @@ Build a system that ingests PDFs, Word documents, spreadsheets, and images into 
 
 ## Advanced Projects
 
-**Autonomous Research Agent** (Chapters 18, 19)
-Extend the Business Idea Validator from Chapter 18 with real tools: web search, database queries, and document retrieval. The agent should plan its own research, execute each step with actual data sources, synthesize findings, and self-critique. Add an iteration loop so it can refine its plan based on its own critique.
+**Autonomous Research Agent** (Chapters 17, 18)
+Extend the Business Idea Validator from Chapter 17 with real tools: web search, database queries, and document retrieval. The agent should plan its own research, execute each step with actual data sources, synthesize findings, and self-critique. Add an iteration loop so it can refine its plan based on its own critique.
 
-**Customer Support Multi-Agent System** (Chapters 16, 17, 19, 20)
+**Customer Support Multi-Agent System** (Chapters 16, 18, 19)
 Build a multi-agent customer support system where:
 - Agent 1 classifies the ticket (billing, technical, account)
 - Agent 2 retrieves relevant knowledge base articles (RAG)
@@ -43,7 +43,7 @@ Deploy as an MCP server on Supabase so it can be called from a web app or Dify.
 **Fine-Tuned Domain Expert** (Chapters 8, 15, 16)
 Fine-tune a small model (Qwen 0.5B or 1.5B) on domain-specific Q&A pairs from your industry. Compare its answers to RAG-based answers from the same knowledge base. When does fine-tuning win? When does RAG win? Build a hybrid system that uses both.
 
-**Campus Services App with MCP** (Chapters 19, 20)
+**Campus Services App with MCP** (Chapters 18, 19)
 Extend the KU Parking Assistant pattern to other campus services: dining hall menus, library hours, bus schedules, event calendars. Each service is a separate MCP tool. Build a single agent that can answer any campus question by calling the appropriate tool. Deploy the tools on Supabase and build a Dify frontend.
 
 **AI-Powered Business Dashboard** (Chapters 7, 10, 13, 16)

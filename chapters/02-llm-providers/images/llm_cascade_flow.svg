@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 170" font-family="Arial, sans-serif" font-size="13">
+  <style>
+    .box { fill: #f5f7fa; stroke: #334155; stroke-width: 1.5; }
+    .arrow { fill: none; stroke: #64748b; stroke-width: 1.5; }
+    .arrowhead { fill: #64748b; }
+    .title { font-size: 14px; font-weight: bold; fill: #0f172a; text-anchor: middle; }
+    .label { fill: #0f172a; text-anchor: middle; }
+    .hint { fill: #64748b; font-size: 11px; text-anchor: middle; font-style: italic; }
+  </style>
+  <defs>
+    <marker id="cascade-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" class="arrowhead"/>
+    </marker>
+  </defs>
+
+  <text x="390" y="22" class="title">llm_cascade: provider fallback flow (first 5 of 8 providers shown)</text>
+
+  <rect class="box" x="10"  y="60" width="120" height="50" rx="8"/>
+  <text class="label" x="70"  y="90">Gemini</text>
+
+  <rect class="box" x="150" y="60" width="120" height="50" rx="8"/>
+  <text class="label" x="210" y="90">Ollama Cloud</text>
+
+  <rect class="box" x="290" y="60" width="120" height="50" rx="8"/>
+  <text class="label" x="350" y="90">Groq</text>
+
+  <rect class="box" x="430" y="60" width="120" height="50" rx="8"/>
+  <text class="label" x="490" y="90">HuggingFace</text>
+
+  <rect class="box" x="570" y="60" width="120" height="50" rx="8"/>
+  <text class="label" x="630" y="90">OpenRouter</text>
+
+  <path class="arrow" d="M130,85 L150,85" marker-end="url(#cascade-arrow)"/>
+  <path class="arrow" d="M270,85 L290,85" marker-end="url(#cascade-arrow)"/>
+  <path class="arrow" d="M410,85 L430,85" marker-end="url(#cascade-arrow)"/>
+  <path class="arrow" d="M550,85 L570,85" marker-end="url(#cascade-arrow)"/>
+
+  <text class="hint" x="140" y="55">503 / quota</text>
+  <text class="hint" x="280" y="55">503 / quota</text>
+  <text class="hint" x="420" y="55">503 / quota</text>
+  <text class="hint" x="560" y="55">503 / quota</text>
+
+  <text class="hint" x="390" y="145">The first successful response is returned to the caller; remaining providers are skipped.</text>
+</svg>

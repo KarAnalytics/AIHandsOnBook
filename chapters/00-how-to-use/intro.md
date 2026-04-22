@@ -10,19 +10,19 @@ If you are exploring AI out of curiosity or professional interest, the simplest 
 
 If you are using this book as part of a university course, the recommended approach is to treat it as a **practical companion** to conceptual textbooks, not as a replacement for them. The chapter introductions provide context and motivation, but they are intentionally concise — they cover the "what" and "why" at a level sufficient to understand the code, not at the depth required to truly master the underlying theory.
 
-For deeper conceptual grounding, pair this book with one or more of the textbooks and resources listed in the References section below. Read the theory in a textbook first, then come to this book to see that theory put into practice. For example, read about attention mechanisms and transformer architectures in a textbook, then run the attention notebook in Chapter 2 to see attention weights computed and visualized on real data. Read about retrieval-augmented generation in a research paper, then build a RAG pipeline from scratch in Chapter 7. The combination of conceptual depth from a textbook and hands-on practice from this book produces a far richer understanding than either alone.
+For deeper conceptual grounding, pair this book with one or more of the textbooks and resources listed in the References section below. Read the theory in a textbook first, then come to this book to see that theory put into practice. For example, read about attention mechanisms and transformer architectures in a textbook, then run the attention notebook in Chapter 2 to see attention weights computed and visualized on real data. Read about retrieval-augmented generation in a research paper, then build a RAG pipeline from scratch in Chapter 8. The combination of conceptual depth from a textbook and hands-on practice from this book produces a far richer understanding than either alone.
 
 ## For Practitioners Solving Specific Problems
 
 If you already have a working knowledge of AI and are looking for starter code or reference implementations for a specific task, use this book as a **reference manual**. The table of contents is organized by application pattern, so you can jump directly to the chapter that matches your problem:
 
-- Need to build a document Q&A system? Start with Chapter 7 (RAG from First Principles) or Chapter 11 (LlamaIndex).
-- Need to query a SQL database with natural language? Go to Chapter 9 (RAG with Structured Data).
-- Need to build a multi-agent workflow? Chapters 15–18 cover single-agent, multi-agent, autonomous, and tool-using architectures.
-- Need to fine-tune a model on company-specific data? Chapter 14 (QLoRA) has a complete working example.
-- Need to deploy an AI tool as a cloud service? Chapter 19 covers MCP servers on Supabase and no-code workflows with Dify.
+- Need to build a document Q&A system? Start with Chapter 8 (RAG from First Principles) or Chapter 12 (LlamaIndex).
+- Need to query a SQL database with natural language? Go to Chapter 10 (RAG with Structured Data).
+- Need to build a multi-agent workflow? Chapters 16–19 cover single-agent, multi-agent, autonomous, and tool-using architectures.
+- Need to fine-tune a model on company-specific data? Chapter 15 (QLoRA) has a complete working example.
+- Need to deploy an AI tool as a cloud service? Chapter 20 covers MCP servers on Supabase and no-code workflows with Dify.
 
-Each notebook is self-contained — you can run it independently without working through the preceding chapters. The `llm_cascade` package handles API key management and provider fallback, so you only need to set one API key to get any notebook running. See Chapter 3 for step-by-step instructions on acquiring a free API key and storing it in Colab or a local `.env` file.
+Each notebook is self-contained — you can run it independently without working through the preceding chapters. The `llm_cascade` package handles API key management and provider fallback, so you only need to set one API key to get any notebook running. See Chapter 4 for step-by-step instructions on acquiring a free API key and storing it in Colab or a local `.env` file.
 
 ## Feeding Notebooks to AI Coding Tools
 

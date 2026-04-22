@@ -15,7 +15,7 @@ You do not need a credit card for any of the free-tier options. The table below 
 | OpenAI | `OPENAI_API_KEY` | https://platform.openai.com/api-keys | Paid (prepaid balance) — not required for this book |
 | xAI (Grok) | `XAI_API_KEY` | https://console.x.ai/ | Paid (prepaid balance) — not required for this book |
 
-If you are new to this and want a single recommendation: **start with Gemini**. It is the easiest to sign up for, has the most generous free tier, and is the only provider in the cascade that handles video natively (used by the Image RAG and Video RAG notebooks in Chapter 10). Adding Groq as a second key gives you a fast fallback when Gemini hits its daily quota.
+If you are new to this and want a single recommendation: **start with Gemini**. It is the easiest to sign up for, has the most generous free tier, and is the only provider in the cascade that handles video natively (used by the Image RAG and Video RAG notebooks in Chapter 11). Adding Groq as a second key gives you a fast fallback when Gemini hits its daily quota.
 
 ## Storing keys in Colab
 

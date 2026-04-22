@@ -6,6 +6,15 @@ Before diving into hands-on coding and practical implementations, it is essentia
 
 Creating a powerful AI assistant is not a single monolithic task. It is a progressively refined process that begins with absorbing vast quantities of internet text and gradually shapes that raw data into a model that is helpful, aligned with human values, and capable of complex reasoning. The lifecycle unfolds across three distinct stages.
 
+```{figure} images/GenAIGlance.png
+:alt: Three-panel infographic showing the progression of LLM training — Stage 1 Pre-training turns internet-scale data into a base model via next-token prediction; Stage 2 Fine-Tuning uses supervised examples and human feedback to create an assistant persona; Stage 3 Advanced Training applies reinforcement learning on verifiable tasks to unlock reasoning.
+:width: 100%
+:label: fig-llm-lifecycle
+:align: center
+
+The three stages of building a large language model. Pre-training compresses the internet into a base model; fine-tuning with human feedback turns that base model into a helpful assistant; advanced training on verifiable problems rewards the model for reaching correct answers, from which deliberate reasoning strategies emerge.
+```
+
 **Stage 1 — Pre-training** builds the foundational knowledge base. Engineers take massive datasets extracted from sources like Common Crawl, representing a snapshot of the public internet — approximately fifteen trillion tokens of text. The core task given to the neural network during this phase is remarkably simple: predict the next token. Through trillions of repetitions the model learns grammar, facts, and rudimentary reasoning purely by predicting the next piece of text. The output of this enormous computational effort is, in essence, a lossy compressed representation of the internet — a web of statistical correlations that captures the patterns of human language.
 
 **Stage 2 — Supervised Fine-Tuning (SFT) and Reinforcement Learning** transforms the base model from an internet document simulator into a conversational assistant. During SFT, engineers curate a dataset of ideal human-AI conversations and the model learns the format of instruction following. This is what transitions a base model like GPT-3 into InstructGPT, or a raw Llama checkpoint into a chat-ready assistant. The training targets three alignment goals known as the "Three H's": the model should be *Helpful* (actively solve the user's task), *Honest* (provide accurate information and admit ignorance), and *Harmless* (refuse unsafe or illegal requests). After SFT, Reinforcement Learning from Human Feedback (RLHF) further refines the model: human evaluators rank multiple model outputs, a reward model learns from those rankings, and the main model is optimized to maximize its reward score. Through this reinforcement loop the model discovers the most effective ways to interact, aligning closely with human preferences.
@@ -28,19 +37,19 @@ This statistical nature also leads to hallucinations. Consider the "biography tr
 
 The landscape of generative AI is no longer limited to text. We have entered the era of multimodality, where models can process images, audio, and video alongside language. Under the hood, it is all vectors: models process image pixels and sound waves using the same statistical prediction engines they use for text. Whether the input is a text string, an image, or an audio clip, the data is converted by a unified tokenizer into a sequence of tokens — text tokens, image "patch" tokens, or audio "spectrogram" tokens — and fed into the same transformer architecture as a mixed stream.
 
-This architectural insight explains why the same retrieval-augmented generation pattern that works for text documents (covered in Chapters 7–9) also works for images (Chapter 10) and video (Chapter 10). The retrieval mechanism changes — CLIP embeddings replace text embeddings — but the retrieve-augment-generate pipeline is the same. Understanding multimodality as "the same architecture, different input modalities" demystifies what might otherwise seem like entirely separate technologies.
+This architectural insight explains why the same retrieval-augmented generation pattern that works for text documents (covered in Chapters 8–10) also works for images (Chapter 11) and video (Chapter 11). The retrieval mechanism changes — CLIP embeddings replace text embeddings — but the retrieve-augment-generate pipeline is the same. Understanding multimodality as "the same architecture, different input modalities" demystifies what might otherwise seem like entirely separate technologies.
 
 ## The Divided Ecosystem
 
 Today the AI ecosystem is broadly divided into two camps. Proprietary models from companies like OpenAI (GPT-4, o1), Google (Gemini), and Anthropic (Claude) offer state-of-the-art performance but require API access and come with usage costs. Open-weight models from Meta (Llama), Mistral, Qwen, and others can be downloaded, inspected, and run locally — offering privacy, customization, and freedom from rate limits at the cost of requiring your own compute infrastructure.
 
-For business practitioners, this divide creates a practical decision: use proprietary APIs for maximum capability and minimum operational overhead, or invest in open models for data privacy and cost control at scale. The `llm_cascade` package used throughout this book bridges this divide by supporting both camps — eight providers spanning proprietary and open-weight models, with automatic fallback when any single provider is unavailable. Chapter 4 covers this in detail.
+For business practitioners, this divide creates a practical decision: use proprietary APIs for maximum capability and minimum operational overhead, or invest in open models for data privacy and cost control at scale. The `llm_cascade` package used throughout this book bridges this divide by supporting both camps — eight providers spanning proprietary and open-weight models, with automatic fallback when any single provider is unavailable. Chapter 5 covers this in detail.
 
 ## From Chatbots to Agents
 
 The progression of AI capabilities can be viewed across five distinct levels. Level 1 is conversational chatbots. Level 2 is reasoners capable of human-level problem solving. Level 3 is agents that can take autonomous actions. Level 4 is innovators that aid in invention. Level 5 is systems complex enough to do the work of entire organizations.
 
-We are currently sitting between Level 2 and Level 3 — moving beyond models that merely talk to us and stepping into the era of agentic AI, where systems can think, plan, and act. Chapters 15 through 18 of this book trace this progression: from single-agent systems that handle one workflow, to multi-agent architectures with specialized roles, to fully autonomous agents that plan their own research, and finally to tool-using agents connected to real-world services via the Model Context Protocol.
+We are currently sitting between Level 2 and Level 3 — moving beyond models that merely talk to us and stepping into the era of agentic AI, where systems can think, plan, and act. Chapters 16 through 19 of this book trace this progression: from single-agent systems that handle one workflow, to multi-agent architectures with specialized roles, to fully autonomous agents that plan their own research, and finally to tool-using agents connected to real-world services via the Model Context Protocol.
 
 ## The Path Ahead
 

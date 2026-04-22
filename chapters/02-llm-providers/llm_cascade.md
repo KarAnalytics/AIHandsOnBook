@@ -2,6 +2,17 @@
 
 Every notebook in this book uses `llm_cascade` for automatic LLM provider fallback. Here's a quick reference.
 
+```{figure} images/llm_cascade_flow.svg
+:alt: Diagram showing five provider boxes connected left-to-right by arrows; each arrow is labelled "503 / quota", indicating that a failure from the current provider falls through to the next.
+:width: 90%
+:label: fig-llm-cascade-flow
+:align: center
+
+How `llm_cascade` cascades through providers: the first to succeed returns the response; a `503`, `429`, or quota-exceeded error on one provider falls through to the next. The cascade tries all 8 providers in order; only the first five are shown here.
+```
+
+As shown in [](#fig-llm-cascade-flow), your notebook call never has to know which provider ultimately served the response — `response.provider` tells you after the fact.
+
 ## Install
 
 ```bash

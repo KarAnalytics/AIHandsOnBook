@@ -6,5 +6,9 @@ code_demos/
 gitignore_materials/
 infra/**/supabase/.temp/
 
+# API keys for local development — never commit.
+.env
+.env.*
+
 # PDF is built in CI and deployed to Pages; don't commit local builds.
 ai-for-business.pdf

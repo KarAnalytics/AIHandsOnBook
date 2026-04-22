@@ -28,19 +28,19 @@ This statistical nature also leads to hallucinations. Consider the "biography tr
 
 The landscape of generative AI is no longer limited to text. We have entered the era of multimodality, where models can process images, audio, and video alongside language. Under the hood, it is all vectors: models process image pixels and sound waves using the same statistical prediction engines they use for text. Whether the input is a text string, an image, or an audio clip, the data is converted by a unified tokenizer into a sequence of tokens — text tokens, image "patch" tokens, or audio "spectrogram" tokens — and fed into the same transformer architecture as a mixed stream.
 
-This architectural insight explains why the same retrieval-augmented generation pattern that works for text documents (covered in Chapters 3–5) also works for images (Chapter 6) and video (Chapter 6). The retrieval mechanism changes — CLIP embeddings replace text embeddings — but the retrieve-augment-generate pipeline is the same. Understanding multimodality as "the same architecture, different input modalities" demystifies what might otherwise seem like entirely separate technologies.
+This architectural insight explains why the same retrieval-augmented generation pattern that works for text documents (covered in Chapters 7–9) also works for images (Chapter 10) and video (Chapter 10). The retrieval mechanism changes — CLIP embeddings replace text embeddings — but the retrieve-augment-generate pipeline is the same. Understanding multimodality as "the same architecture, different input modalities" demystifies what might otherwise seem like entirely separate technologies.
 
 ## The Divided Ecosystem
 
 Today the AI ecosystem is broadly divided into two camps. Proprietary models from companies like OpenAI (GPT-4, o1), Google (Gemini), and Anthropic (Claude) offer state-of-the-art performance but require API access and come with usage costs. Open-weight models from Meta (Llama), Mistral, Qwen, and others can be downloaded, inspected, and run locally — offering privacy, customization, and freedom from rate limits at the cost of requiring your own compute infrastructure.
 
-For business practitioners, this divide creates a practical decision: use proprietary APIs for maximum capability and minimum operational overhead, or invest in open models for data privacy and cost control at scale. The `llm_cascade` package used throughout this book bridges this divide by supporting both camps — eight providers spanning proprietary and open-weight models, with automatic fallback when any single provider is unavailable. Chapter 2 covers this in detail.
+For business practitioners, this divide creates a practical decision: use proprietary APIs for maximum capability and minimum operational overhead, or invest in open models for data privacy and cost control at scale. The `llm_cascade` package used throughout this book bridges this divide by supporting both camps — eight providers spanning proprietary and open-weight models, with automatic fallback when any single provider is unavailable. Chapter 4 covers this in detail.
 
 ## From Chatbots to Agents
 
 The progression of AI capabilities can be viewed across five distinct levels. Level 1 is conversational chatbots. Level 2 is reasoners capable of human-level problem solving. Level 3 is agents that can take autonomous actions. Level 4 is innovators that aid in invention. Level 5 is systems complex enough to do the work of entire organizations.
 
-We are currently sitting between Level 2 and Level 3 — moving beyond models that merely talk to us and stepping into the era of agentic AI, where systems can think, plan, and act. Chapters 11 through 14 of this book trace this progression: from single-agent systems that handle one workflow, to multi-agent architectures with specialized roles, to fully autonomous agents that plan their own research, and finally to tool-using agents connected to real-world services via the Model Context Protocol.
+We are currently sitting between Level 2 and Level 3 — moving beyond models that merely talk to us and stepping into the era of agentic AI, where systems can think, plan, and act. Chapters 15 through 18 of this book trace this progression: from single-agent systems that handle one workflow, to multi-agent architectures with specialized roles, to fully autonomous agents that plan their own research, and finally to tool-using agents connected to real-world services via the Model Context Protocol.
 
 ## The Path Ahead
 

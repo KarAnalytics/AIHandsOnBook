@@ -32,6 +32,8 @@ Key terms used throughout this book, listed alphabetically.
 
 **GloVe (Global Vectors)** — A pre-trained word embedding model that captures semantic relationships from co-occurrence statistics. Used in the Embeddings notebook.
 
+**Google Cloud Run** — A managed container platform on Google Cloud that autoscales from zero to many instances. Used in this book to host the MCP server as a public HTTPS endpoint. Each deploy ships a Docker container built automatically from the source folder.
+
 **Hallucination** — When an LLM generates confident but factually incorrect information. RAG and tool use are designed to reduce hallucination by grounding answers in retrieved evidence.
 
 **Haversine Formula** — A formula for computing the great-circle distance between two points on a sphere given their latitudes and longitudes. Used in the KU Parking Assistant.
@@ -73,8 +75,6 @@ Key terms used throughout this book, listed alphabetically.
 **SFT (Supervised Fine-Tuning)** — Training a base model on curated prompt-response pairs to teach it instruction following. The first step of post-training.
 
 **StateGraph** — LangGraph's core abstraction: a directed graph where nodes are processing functions and edges define the flow of a typed state dictionary.
-
-**Supabase Edge Functions** — Serverless functions (Deno/TypeScript) hosted on Supabase's infrastructure. Used in this book to deploy MCP servers as public HTTPS endpoints.
 
 **System Prompt** — Instructions given to an LLM that define its role, behavior, and constraints. Separate from the user's message.
 

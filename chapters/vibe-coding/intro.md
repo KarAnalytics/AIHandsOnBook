@@ -48,7 +48,7 @@ Vibe coding represents one of the most significant shifts in the relationship be
 
 This does not eliminate the need for professional software engineers — production systems still require security auditing, performance optimization, scalability testing, and maintenance that go well beyond what vibe coding produces. But it does mean that the distance between "I have an idea" and "I have a working prototype" has collapsed to nearly zero. For product managers, consultants, entrepreneurs, and analysts, this is transformative.
 
-Every notebook in this book was built using vibe coding tools. The fact that you are reading a functional, deployed, multi-chapter interactive textbook with 30+ runnable notebooks, a cloud-hosted MCP server, and a Supabase Edge Function — all created through conversational AI interactions — is itself a demonstration of what vibe coding makes possible.
+Every notebook in this book was built using vibe coding tools. The fact that you are reading a functional, deployed, multi-chapter interactive textbook with 30+ runnable notebooks and a cloud-hosted MCP server on Google Cloud Run — all created through conversational AI interactions — is itself a demonstration of what vibe coding makes possible.
 
 For a related approach, see **RAG from First Principles**.
 

@@ -1,14 +1,24 @@
-##I used claude code to get these suggestions. I created a supabase serverless MCP for storing KU parking coordinates. 
+## Deployed Cloud Run MCP server for KU parking coordinates.
 
-URL: 
-https://phhgezbdcpnjbpzvslct.supabase.co/functions/v1/ku-parking
+URL:
+https://ku-parking-mcp-1098133188018.us-central1.run.app
 
 When you want to add more lots or fix a coordinate:
 
-Edit Agentic/mcp/supabase/supabase/functions/ku-parking/index.ts locally (just change the KU_BUILDINGS or KU_PARKING_LOTS arrays near the top)
-Redeploy:
+1. Edit infra/ku-parking-mcp/cloudrun/index.ts locally
+   (just change the KU_BUILDINGS or KU_PARKING_LOTS arrays near the top)
 
-cd Agentic/mcp/supabase
-supabase functions deploy ku-parking --no-verify-jwt
-The new data is live immediately. No client code changes needed — anyone calling the same URL will see the fresh data on their next request.
+2. Redeploy:
 
+   cd infra/ku-parking-mcp/cloudrun
+   gcloud run deploy ku-parking-mcp --source . --region us-central1 --allow-unauthenticated --min-instances 0 --max-instances 10
+
+The new data is live immediately. No client code changes needed -- anyone
+calling the same URL will see the fresh data on their next request.
+
+---
+
+The older Supabase deployment lives in infra/ku-parking-mcp/supabase/ as a
+reference. It is no longer the primary endpoint because Supabase's free tier
+pauses projects after 7 days of inactivity, which made the endpoint
+unreliable for classroom use.

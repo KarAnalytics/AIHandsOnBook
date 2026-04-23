@@ -48,8 +48,8 @@ If you already have experience with a topic, here is what each chapter actually 
 | Ch 14: Single Agent | Ch 3 | LLM + tools pattern, system prompts |
 | Ch 15: Multi-Agent | Ch 14 | Agent handoff, LLM-as-a-judge |
 | Ch 16: Autonomous Agents | Ch 14 | Plan-Execute-Synthesize-Reflect pattern |
-| Ch 17: Tool Agents and MCP | Ch 14 | MCP protocol, JSON-RPC, Supabase Edge Functions |
-| Ch 18: Deployment | Ch 17 | Supabase deployment, Dify workflows |
+| Ch 17: Tool Agents and MCP | Ch 14 | MCP protocol, JSON-RPC, Cloud Run containers |
+| Ch 18: Deployment | Ch 17 | Cloud Run deployment, Dify workflows |
 
 ## Three Fast Tracks
 

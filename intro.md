@@ -26,7 +26,7 @@ This book takes you from zero to deploying AI applications, organized into six p
 
 **Part V — Agents:** LLMs that decide which tools to call — from single-agent systems to multi-agent orchestration to autonomous planning workflows. Includes a real-world example (KU Parking Assistant) with tool calling via MCP.
 
-**Part VI — Deployment:** Taking your AI from a notebook to production — MCP servers on Supabase, no-code workflows with Dify, and the `llm_cascade` package for provider management.
+**Part VI — Deployment:** Taking your AI from a notebook to production — MCP servers on Google Cloud Run, no-code workflows with Dify, and the `llm_cascade` package for provider management.
 
 ## How to use this book
 

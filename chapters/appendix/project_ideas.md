@@ -38,13 +38,13 @@ Build a multi-agent customer support system where:
 - Agent 2 retrieves relevant knowledge base articles (RAG)
 - Agent 3 drafts a response
 - Agent 4 checks the response for accuracy and tone
-Deploy as an MCP server on Supabase so it can be called from a web app or Dify.
+Deploy as an MCP server on Google Cloud Run so it can be called from a web app or Dify.
 
 **Fine-Tuned Domain Expert** (Chapters 8, 15, 16)
 Fine-tune a small model (Qwen 0.5B or 1.5B) on domain-specific Q&A pairs from your industry. Compare its answers to RAG-based answers from the same knowledge base. When does fine-tuning win? When does RAG win? Build a hybrid system that uses both.
 
 **Campus Services App with MCP** (Chapters 18, 19)
-Extend the KU Parking Assistant pattern to other campus services: dining hall menus, library hours, bus schedules, event calendars. Each service is a separate MCP tool. Build a single agent that can answer any campus question by calling the appropriate tool. Deploy the tools on Supabase and build a Dify frontend.
+Extend the KU Parking Assistant pattern to other campus services: dining hall menus, library hours, bus schedules, event calendars. Each service is a separate MCP tool. Build a single agent that can answer any campus question by calling the appropriate tool. Deploy the tools on Google Cloud Run and build a Dify frontend.
 
 **AI-Powered Business Dashboard** (Chapters 7, 10, 13, 16)
 Connect to a business database, build text-to-SQL for ad-hoc queries, add RAG over company reports for qualitative insights, and create a Gradio or Streamlit dashboard that combines both. Users can ask "What were Q3 sales by region?" (SQL) and "What does our annual report say about expansion plans?" (RAG) in the same interface.

@@ -121,7 +121,7 @@ project:
       children:
         - file: chapters/deployment/intro.md
           children:
-            - file: chapters/deployment/mcp_supabase.md
+            - file: chapters/deployment/mcp_cloudrun.md
             - file: chapters/deployment/dify_workflow.md
     - title: Appendix
       children:

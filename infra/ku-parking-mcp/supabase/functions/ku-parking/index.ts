@@ -1,27 +1,23 @@
 // KU Parking MCP Server -- Supabase Edge Function (Deno runtime)
 //
-// This file implements the same parking lookup service as ku_parking_mcp.py,
-// but as a Supabase Edge Function that speaks MCP over HTTP. Deploy it once
-// and any MCP-compatible client (Dify, n8n, Python, Claude Desktop, a web app)
-// can call the same tools by sending JSON-RPC requests to the public URL.
+// Preserved as a historical reference alongside the active Cloud Run version
+// at ../../../cloudrun/index.ts. Same server, same data, same MCP protocol;
+// only the host platform and bootstrap differ.
 //
-// Deploy:
-//     cd Agentic/mcp/supabase
+// Deploy (if you ever want to redeploy the Supabase version):
+//     cd infra/ku-parking-mcp
 //     supabase functions deploy ku-parking --no-verify-jwt
 //
 // Public URL format:
 //     https://<project-ref>.supabase.co/functions/v1/ku-parking
 //
-// This handler speaks MCP's JSON-RPC 2.0 protocol directly (the "initialize",
-// "tools/list", and "tools/call" methods). We keep the implementation minimal
-// and hand-rolled to avoid pulling in the full MCP TypeScript SDK -- Supabase
-// Edge Functions cold-start faster when there are fewer imports.
+// Data source: parking.ku.edu (permit pages + 2024-25 parking map PDF),
+// refreshed 2026-04-23. Most lot coordinates are approximate.
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
 // -----------------------------------------------------------------------------
-// Data -- same verified coordinates as ku_parking_mcp.py and the Dify KB files
-// Update all three places together if you change a building or lot.
+// Buildings
 // -----------------------------------------------------------------------------
 
 type Coords = [number, number];
@@ -42,57 +38,55 @@ const KU_BUILDINGS: Record<string, Coords> = {
   "Ambler Student Recreation Fitness Center":[38.952512, -95.247929],
 };
 
-// Informal names, nicknames, and school/department associations people actually
-// type. Any of these should resolve to the canonical building name above.
 const BUILDING_ALIASES: Record<string, string[]> = {
   "Capitol Federal Hall (Business School)": [
     "business school", "b-school", "bschool", "biz school",
     "school of business", "ku business school", "ku business",
     "capitol federal", "capitol federal hall", "capfed", "cap fed",
   ],
-  "Kansas Union":                            [
+  "Kansas Union": [
     "union", "student union", "ku union", "the union", "ku student union",
     "memorial union", "bookstore",
   ],
-  "Allen Fieldhouse":                        [
+  "Allen Fieldhouse": [
     "allen", "fieldhouse", "the phog", "phog", "phog allen",
     "basketball stadium", "phog stadium", "basketball arena",
     "ku basketball", "basketball", "jayhawk basketball",
   ],
-  "Strong Hall":                             [
+  "Strong Hall": [
     "strong", "admin building", "administration", "admin",
     "chancellor", "chancellor's office",
   ],
-  "Watson Library":                          [
+  "Watson Library": [
     "watson", "watson lib", "main library", "research library",
     "ku library",
   ],
-  "Anschutz Library":                        [
+  "Anschutz Library": [
     "anschutz", "anschutz lib", "science library", "stem library",
   ],
-  "Dyche Hall":                              [
+  "Dyche Hall": [
     "dyche", "natural history museum", "nhm",
     "biodiversity institute", "museum of natural history",
   ],
-  "Fraser Hall":                             [
+  "Fraser Hall": [
     "fraser", "psychology building", "psych building",
   ],
-  "Lied Center":                             [
+  "Lied Center": [
     "lied", "performing arts", "performing arts center",
     "concert hall", "theater",
   ],
-  "Memorial Stadium":                        [
+  "Memorial Stadium": [
     "stadium", "football stadium", "memorial", "kivisto field",
     "ku football", "football arena", "jayhawk football",
   ],
-  "Wescoe Hall":                             [
+  "Wescoe Hall": [
     "wescoe", "wescoe beach", "liberal arts building",
     "college of liberal arts", "humanities building",
   ],
-  "Spencer Museum of Art":                   [
+  "Spencer Museum of Art": [
     "spencer", "spencer museum", "art museum", "museum of art",
   ],
-  "Ambler Student Recreation Fitness Center":[
+  "Ambler Student Recreation Fitness Center": [
     "ambler", "ambler gym", "ambler fitness", "ambler fitness center",
     "ambler rec", "ambler rec center", "ambler recreation",
     "ambler srfc", "srfc",
@@ -102,29 +96,105 @@ const BUILDING_ALIASES: Record<string, string[]> = {
   ],
 };
 
+// -----------------------------------------------------------------------------
+// Parking lots
+// -----------------------------------------------------------------------------
+
 interface ParkingLot {
   lot: string;
-  color: string;
+  colors: string[];
   lat: number;
   lng: number;
+  near: string;
 }
 
 const KU_PARKING_LOTS: ParkingLot[] = [
-  { lot: "Lot 3"                    , color: "Blue"      , lat: 38.958942, lng: -95.247614 },
-  { lot: "Lot 5"                    , color: "Yellow"    , lat: 38.95861, lng: -95.24441 },
-  { lot: "Lot 10"                   , color: "Blue"      , lat: 38.956221, lng: -95.244787 },
-  { lot: "Lot 14"                   , color: "Yellow"    , lat: 38.95716, lng: -95.24307 },
-  { lot: "Lot 16"                   , color: "Visitor"   , lat: 38.9592, lng: -95.24298 },
-  { lot: "Lot 18"                   , color: "Yellow"    , lat: 38.95703, lng: -95.24783 },
-  { lot: "Lot 60"                   , color: "Blue"      , lat: 38.96333, lng: -95.24691 },
-  { lot: "Lot 70"                   , color: "Blue"      , lat: 38.953906, lng: -95.252394 },
-  { lot: "Lot 71"                   , color: "Yellow"    , lat: 38.953666, lng: -95.252394 },
-  { lot: "Lot 90"                   , color: "Gold"      , lat: 38.952512, lng: -95.247929 },
-  { lot: "Lot 91"                   , color: "Gold"      , lat: 38.959634, lng: -95.244569 },
-  { lot: "Lot 118"                  , color: "Gold"      , lat: 38.953505, lng: -95.24974 },
-  { lot: "Lot 300A-D"               , color: "Gold"      , lat: 38.95494, lng: -95.26237 },
-  { lot: "Lot 300E-G"               , color: "Gold"      , lat: 38.95494, lng: -95.26289 },
-  { lot: "Allen Fieldhouse Garage"  , color: "Gold"      , lat: 38.954306, lng: -95.252394 },
+  { lot: "Lot 1",   colors: ["Blue"],                lat: 38.9600, lng: -95.2490, near: "E. Carruth-O'Leary Hall" },
+  { lot: "Lot 6",   colors: ["Blue"],                lat: 38.9566, lng: -95.2510, near: "S.W. Green Hall" },
+  { lot: "Lot 7",   colors: ["Red"],                 lat: 38.9566, lng: -95.2530, near: "N.W. Green Hall" },
+  { lot: "Lot 8",   colors: ["Blue"],                lat: 38.9566, lng: -95.2490, near: "Sunnyside Avenue" },
+  { lot: "Lot 9",   colors: ["Red"],                 lat: 38.9566, lng: -95.2560, near: "N. Nunemaker Hall" },
+  { lot: "Lot 10",  colors: ["Gold"],                lat: 38.956221, lng: -95.244787, near: "S. Watson Library" },
+  { lot: "Lot 11",  colors: ["Blue"],                lat: 38.9633, lng: -95.2490, near: "N. Joseph R. Pearson Hall" },
+  { lot: "Lot 12",  colors: ["Gold"],                lat: 38.9566, lng: -95.2440, near: "Lilac Lane" },
+  { lot: "Lot 13",  colors: ["Gold"],                lat: 38.9585, lng: -95.2440, near: "E. Danforth Chapel" },
+  { lot: "Lot 14",  colors: ["Gold"],                lat: 38.957160, lng: -95.243070, near: "E. Fraser Hall" },
+  { lot: "Lot 15",  colors: ["Blue"],                lat: 38.9566, lng: -95.2440, near: "E. Blake Hall" },
+  { lot: "Lot 16",  colors: ["Gold"],                lat: 38.959200, lng: -95.242980, near: "E. Kansas Union" },
+  { lot: "Lot 17",  colors: ["Blue"],                lat: 38.9566, lng: -95.2490, near: "N. Summerfield Hall" },
+  { lot: "Lot 18",  colors: ["Gold"],                lat: 38.957030, lng: -95.247830, near: "S. Wescoe Hall" },
+  { lot: "Lot 19",  colors: ["Blue"],                lat: 38.9566, lng: -95.2470, near: "Sunflower Road" },
+  { lot: "Lot 34",  colors: ["Blue", "Red"],         lat: 38.9566, lng: -95.2470, near: "Price Computing Center" },
+  { lot: "Lot 35",  colors: ["Blue"],                lat: 38.9566, lng: -95.2490, near: "S. Military Science Building" },
+  { lot: "Lot 36",  colors: ["Gold", "Blue", "Red"], lat: 38.9585, lng: -95.2470, near: "W. Memorial Drive" },
+  { lot: "Lot 37",  colors: ["Blue"],                lat: 38.9566, lng: -95.2470, near: "N. Haworth Hall" },
+  { lot: "Lot 38",  colors: ["Blue"],                lat: 38.9566, lng: -95.2440, near: "E. Hall Center" },
+  { lot: "Lot 39",  colors: ["Gold", "Blue", "Red"], lat: 38.9585, lng: -95.2470, near: "E. Memorial Drive" },
+  { lot: "Lot 41",  colors: ["Blue", "Red"],         lat: 38.9585, lng: -95.2530, near: "W. Learned Hall" },
+  { lot: "Lot 52",  colors: ["Red"],                 lat: 38.9633, lng: -95.2490, near: "E. Carruth-O'Leary & JRP" },
+  { lot: "Lot 54",  colors: ["Blue", "Red"],         lat: 38.9566, lng: -95.2510, near: "W. Murphy Hall" },
+  { lot: "Lot 70",  colors: ["Red"],                 lat: 38.953906, lng: -95.252394, near: "S. Allen Fieldhouse" },
+  { lot: "Lot 72",  colors: ["Red"],                 lat: 38.9566, lng: -95.2530, near: "E. Burge Union" },
+  { lot: "Lot 91",  colors: ["Red", "Yellow"],       lat: 38.959634, lng: -95.244569, near: "Spencer Museum of Art" },
+  { lot: "Lot 102", colors: ["Red"],                 lat: 38.9566, lng: -95.2560, near: "S. Lewis Hall" },
+  { lot: "Lot 117", colors: ["Blue", "Red", "Yellow"], lat: 38.9540, lng: -95.2470, near: "E. Watkins Health Center" },
+  { lot: "Lot 118", colors: ["Blue"],                lat: 38.953505, lng: -95.249740, near: "E. Capitol Federal Hall" },
+  { lot: "Lot 126", colors: ["Blue"],                lat: 38.9566, lng: -95.2470, near: "Facilities Administration Bldg" },
+  { lot: "Lot 129", colors: ["Blue"],                lat: 38.9585, lng: -95.2510, near: "E. Learned Hall" },
+
+  { lot: "Lot 50",  colors: ["Yellow"],              lat: 38.9633, lng: -95.2490, near: "E. Carruth-O'Leary & JRP" },
+  { lot: "Lot 51",  colors: ["Red", "Yellow"],       lat: 38.9660, lng: -95.2490, near: "Max Kade Center / Sudler Annex" },
+  { lot: "Lot 53",  colors: ["Yellow"],              lat: 38.9600, lng: -95.2440, near: "Mississippi Street" },
+  { lot: "Lot 56",  colors: ["Yellow"],              lat: 38.9633, lng: -95.2490, near: "W. Memorial Stadium" },
+  { lot: "Lot 60",  colors: ["Red", "Yellow"],       lat: 38.963330, lng: -95.246910, near: "W. Memorial Stadium" },
+  { lot: "Lot 61",  colors: ["Yellow"],              lat: 38.9566, lng: -95.2440, near: "Sunnyside & Illinois" },
+  { lot: "Lot 62",  colors: ["Red", "Yellow"],       lat: 38.9566, lng: -95.2440, near: "Sunnyside & Illinois" },
+  { lot: "Lot 71",  colors: ["Yellow"],              lat: 38.953666, lng: -95.252394, near: "S. Allen Fieldhouse" },
+  { lot: "Lot 90",  colors: ["Blue", "Red", "Yellow"], lat: 38.952512, lng: -95.247929, near: "Rec Center (Ambler SRFC)" },
+  { lot: "Lot 93",  colors: ["Blue", "Yellow"],      lat: 38.9540, lng: -95.2560, near: "N. Stouffer Place" },
+  { lot: "Lot 125", colors: ["Yellow"],              lat: 38.9510, lng: -95.2530, near: "Hoglund Ballpark" },
+  { lot: "Lot 127", colors: ["Yellow"],              lat: 38.9510, lng: -95.2530, near: "N. Downs Hall" },
+
+  { lot: "Lot 96",  colors: ["Green"],               lat: 38.9660, lng: -95.2470, near: "GSP & Corbin Halls" },
+  { lot: "Lot 101", colors: ["Red", "Green"],        lat: 38.9566, lng: -95.2560, near: "E. Templin Hall (Daisy Hill)" },
+  { lot: "Lot 103", colors: ["Green"],               lat: 38.9540, lng: -95.2590, near: "Engel Rd. (Daisy Hill)" },
+  { lot: "Lot 104", colors: ["Red", "Green"],        lat: 38.9510, lng: -95.2560, near: "W. Ellsworth Hall" },
+  { lot: "Lot 105", colors: ["Green"],               lat: 38.9510, lng: -95.2560, near: "S. Ellsworth Hall" },
+  { lot: "Lot 109", colors: ["Red", "Green"],        lat: 38.9566, lng: -95.2530, near: "S. Jayhawker Towers" },
+  { lot: "Lot 110", colors: ["Green"],               lat: 38.9566, lng: -95.2530, near: "E. Jayhawker Towers" },
+  { lot: "Lot 111", colors: ["Red", "Green"],        lat: 38.9660, lng: -95.2440, near: "GSP & Corbin Halls" },
+  { lot: "Lot 112", colors: ["Red", "Green"],        lat: 38.9510, lng: -95.2510, near: "McCarthy Hall" },
+  { lot: "Lot 113", colors: ["Red", "Green"],        lat: 38.9510, lng: -95.2530, near: "Downs Hall" },
+  { lot: "Lot 114", colors: ["Green"],               lat: 38.9510, lng: -95.2560, near: "W. Stouffer Place" },
+  { lot: "Lot 115", colors: ["Green"],               lat: 38.9510, lng: -95.2530, near: "E. Stouffer Place" },
+  { lot: "Lot 116", colors: ["Green"],               lat: 38.9510, lng: -95.2530, near: "Downs Hall" },
+  { lot: "Lot 119", colors: ["Green"],               lat: 38.9510, lng: -95.2560, near: "Ellis Drive" },
+  { lot: "Lot 120", colors: ["Green"],               lat: 38.9633, lng: -95.2420, near: "11th & Louisiana" },
+  { lot: "Lot 130", colors: ["Green"],               lat: 38.9540, lng: -95.2560, near: "N. Stouffer Place" },
+
+  { lot: "Lot 100", colors: ["Red", "Brown"],        lat: 38.9585, lng: -95.2420, near: "Alumni Place" },
+  { lot: "Lot 107", colors: ["Brown"],               lat: 38.9566, lng: -95.2420, near: "E. Sellards Hall" },
+  { lot: "Lot 121", colors: ["Brown"],               lat: 38.9585, lng: -95.2420, near: "Amini Halls" },
+  { lot: "Lot 122", colors: ["Brown"],               lat: 38.9585, lng: -95.2420, near: "Louisiana Street" },
+  { lot: "Lot 123", colors: ["Brown"],               lat: 38.9600, lng: -95.2420, near: "13th Street" },
+  { lot: "Lot 124", colors: ["Red", "Brown"],        lat: 38.9600, lng: -95.2420, near: "13th & Louisiana" },
+
+  { lot: "Lot 131", colors: ["Orange"],              lat: 38.9510, lng: -95.2490, near: "E. Naismith Hall" },
+  { lot: "Lot 132", colors: ["Orange"],              lat: 38.9510, lng: -95.2490, near: "E. Arkansas St" },
+  { lot: "Lot 134", colors: ["Fuchsia"],             lat: 38.9633, lng: -95.2490, near: "Hawker Apartments" },
+
+  { lot: "Lot 300A", colors: ["Red", "Yellow"],      lat: 38.954940, lng: -95.262370, near: "Lied Center" },
+  { lot: "Lot 300B", colors: ["Yellow"],             lat: 38.954940, lng: -95.262370, near: "Lied Center" },
+  { lot: "Lot 300C", colors: ["Yellow"],             lat: 38.954940, lng: -95.262370, near: "Lied Center" },
+  { lot: "Lot 300D", colors: ["Yellow"],             lat: 38.954940, lng: -95.262370, near: "Lied Center" },
+  { lot: "Lot 300E", colors: ["Blue", "Red", "Green"], lat: 38.954940, lng: -95.262890, near: "Lied Center" },
+  { lot: "Lot 300F", colors: ["Green"],              lat: 38.954940, lng: -95.262890, near: "Lied Center" },
+  { lot: "Lot 300G", colors: ["Green"],              lat: 38.954940, lng: -95.262890, near: "Lied Center" },
+  { lot: "Lot 303",  colors: ["Red"],                lat: 38.9460, lng: -95.2650, near: "W. Park & Ride" },
+
+  { lot: "Allen Fieldhouse Garage",  colors: ["Garage"], lat: 38.954306, lng: -95.252394, near: "Naismith Dr & Irving Hill Rd" },
+  { lot: "Central District Garage",  colors: ["Garage"], lat: 38.9566, lng: -95.2560, near: "1631 Ousdahl Road" },
+  { lot: "Mississippi Street Garage",colors: ["Garage"], lat: 38.9600, lng: -95.2440, near: "1261 Oread Avenue" },
 ];
 
 // -----------------------------------------------------------------------------
@@ -143,7 +213,6 @@ function haversineMiles(lat1: number, lng1: number, lat2: number, lng2: number):
   return 2 * R * Math.asin(Math.sqrt(a));
 }
 
-// Very small stopword list -- filler words that should not drive a token match.
 const STOPWORDS = new Set([
   "the", "a", "an", "of", "at", "on", "in", "and", "or", "to",
   "ku", "kansas", "university", "hall", "building", "bldg",
@@ -156,7 +225,6 @@ function tokenize(s: string): string[] {
     .filter((t) => t && !STOPWORDS.has(t));
 }
 
-// F1-style token overlap score between two strings (0 to 1).
 function tokenScore(query: string, candidate: string): number {
   const qTokens = tokenize(query);
   const cTokens = tokenize(candidate);
@@ -171,37 +239,27 @@ function tokenScore(query: string, candidate: string): number {
   return (2 * precision * recall) / (precision + recall);
 }
 
-// Approximate building match. Order of preference:
-//   1. Exact match on canonical name or alias
-//   2. Substring match (query in name, or query in alias, or alias in query)
-//   3. Token-overlap scoring across canonical names and aliases
-// Returns the canonical building name, or null if nothing is confident enough.
 function matchBuilding(query: string): string | null {
   const q = query.toLowerCase().trim();
   if (!q) return null;
   const names = Object.keys(KU_BUILDINGS);
 
-  // 1a. Exact match on canonical name
   for (const name of names) {
     if (name.toLowerCase() === q) return name;
   }
-  // 1b. Exact match on an alias
   for (const name of names) {
     for (const alias of BUILDING_ALIASES[name] || []) {
       if (alias.toLowerCase() === q) return name;
     }
   }
 
-  // 2a. Substring match against canonical name
   for (const name of names) {
     if (name.toLowerCase().includes(q) || q.includes(name.toLowerCase())) return name;
   }
-  // 2b. Reverse substring on the non-parenthetical short form
   for (const name of names) {
     const shortKey = name.split("(")[0].trim().toLowerCase();
     if (shortKey && (q.includes(shortKey) || shortKey.includes(q))) return name;
   }
-  // 2c. Substring either direction against any alias
   for (const name of names) {
     for (const alias of BUILDING_ALIASES[name] || []) {
       const al = alias.toLowerCase();
@@ -209,7 +267,6 @@ function matchBuilding(query: string): string | null {
     }
   }
 
-  // 3. Token-overlap scoring across canonical name + all aliases
   let bestName: string | null = null;
   let bestScore = 0;
   for (const name of names) {
@@ -222,7 +279,6 @@ function matchBuilding(query: string): string | null {
       }
     }
   }
-  // Require meaningful overlap so random words do not latch onto a building.
   return bestScore >= 0.5 ? bestName : null;
 }
 
@@ -260,9 +316,10 @@ function findParkingNearBuilding(
     const dist = haversineMiles(targetLat, targetLng, lot.lat, lot.lng);
     return {
       lot: lot.lot,
-      color: lot.color,
+      colors: lot.colors.join("/"),
+      near: lot.near,
       distance_miles: Number(dist.toFixed(3)),
-      walk_minutes: Math.round(dist * 20), // ~3 mph walking
+      walk_minutes: Math.round(dist * 20),
       google_maps: googleMapsPin(lot.lat, lot.lng),
     };
   });
@@ -278,26 +335,37 @@ function findParkingNearBuilding(
   const lines = [header];
   withinRange.slice(0, topK).forEach((r, i) => {
     lines.push(
-      `  ${i + 1}. ${r.lot} (${r.color}) - ${r.distance_miles} mi (${r.walk_minutes} min walk) -> ${r.google_maps}`,
+      `  ${i + 1}. ${r.lot} (${r.colors}) near ${r.near} - ${r.distance_miles} mi (${r.walk_minutes} min walk) -> ${r.google_maps}`,
     );
   });
   return lines.join("\n");
 }
 
 function getParkingColorsLegend(): string {
-  return (
-    "KU parking color legend:\n" +
-    "- Blue: student commuter permit\n" +
-    "- Yellow: faculty/staff permit\n" +
-    "- Gold: premium permit (close to central campus)\n" +
-    "- Red: restricted/reserved\n" +
-    "- Visitor: open to visitors, often metered or short-term\n" +
-    "- Park & Ride: free remote lot with shuttle service"
-  );
+  return [
+    "KU parking color legend (2024-25, source: parking.ku.edu):",
+    "",
+    "Faculty/staff permits (tiered -- each higher tier also covers lower tiers):",
+    "- Yellow: basic permit ($310/yr). All faculty and staff. Off-campus students also buy this tier.",
+    "- Red:    general faculty/staff permit ($388/yr). Covers Red, Yellow, Park & Ride, and most Housing lots.",
+    "- Blue:   senior faculty/staff permit ($435/yr). Eligibility: employee age + years of service >= 62.",
+    "- Gold:   premium permit ($585/yr). Eligibility: age + years of service >= 70, primary workplace in central campus.",
+    "",
+    "Student housing permits ($340/yr each; valid in Green zones + lot-specific overrides):",
+    "- Green:   Daisy Hill, GSP/Corbin, Central District, Jayhawker Towers, and Stouffer Place residents.",
+    "- Orange:  Naismith Hall residents.",
+    "- Brown:   Alumni Place / Scholarship Hall residents.",
+    "- Fuchsia: Hawker Apartments residents.",
+    "",
+    "Everyone else:",
+    "- Visitor:       $4/day pay-by-space in Yellow or Green zones.",
+    "- Park & Ride:   Free remote lot with shuttle service. Included with Red/Blue/Gold permits.",
+    "- Garage:        Allen Fieldhouse / Central District / Mississippi Street garages have their own permits, plus open hourly rates for visitors ($2.25 first hour, $2.00 each hour after). Garages are preempted during home athletic events with 48-hour notice.",
+  ].join("\n");
 }
 
 // -----------------------------------------------------------------------------
-// MCP tool schema (what clients see when they call tools/list)
+// MCP tool schema
 // -----------------------------------------------------------------------------
 
 const TOOLS = [
@@ -313,7 +381,7 @@ const TOOLS = [
   {
     name: "find_parking_near_building",
     description:
-      "Find the nearest parking lots within a given radius of a KU building. Approximate matching is supported -- informal names, abbreviations, and partial phrases all resolve to the right building. Examples: 'business school' -> Capitol Federal Hall (Business School); 'ambler', 'ambler gym', 'student gym', or 'fitness center' -> Ambler Student Recreation Fitness Center; 'the union' or 'student union' -> Kansas Union; 'the phog' -> Allen Fieldhouse. Returns a ranked list with permit color, distance in miles, walk time, and a Google Maps pin URL for each lot.",
+      "Find the nearest parking lots within a given radius of a KU building. Approximate matching is supported -- informal names, abbreviations, and partial phrases all resolve to the right building. Examples: 'business school' -> Capitol Federal Hall (Business School); 'ambler', 'ambler gym', 'student gym', or 'fitness center' -> Ambler Student Recreation Fitness Center; 'the union' or 'student union' -> Kansas Union; 'the phog' -> Allen Fieldhouse. Returns a ranked list where each lot includes all applicable permit colors (slash-separated for multi-zone lots), a location hint, distance in miles, walk time, and a Google Maps pin URL.",
     inputSchema: {
       type: "object",
       properties: {
@@ -337,7 +405,7 @@ const TOOLS = [
   },
   {
     name: "get_parking_colors_legend",
-    description: "Return the KU parking color code legend explaining what each permit color means.",
+    description: "Return the KU parking color legend, grouped by faculty/staff tiered permits, student housing permits, and everyone-else options (Visitor, Park & Ride, Garage). Sourced from parking.ku.edu.",
     inputSchema: {
       type: "object",
       properties: {},
@@ -364,16 +432,7 @@ function dispatchToolCall(name: string, args: Record<string, unknown>): string {
 }
 
 // -----------------------------------------------------------------------------
-// Minimal MCP JSON-RPC 2.0 handler
-//
-// We implement only the three methods a typical client needs:
-//   initialize     -- handshake
-//   tools/list     -- return tool schemas
-//   tools/call     -- execute a named tool
-//
-// This avoids pulling in the full MCP SDK, which speeds up cold starts on
-// Supabase Edge Functions. For a production server you'd use the official
-// @modelcontextprotocol/sdk package.
+// MCP JSON-RPC 2.0 handler
 // -----------------------------------------------------------------------------
 
 interface JsonRpcRequest {
@@ -393,7 +452,7 @@ function handleMcpRequest(req: JsonRpcRequest): Record<string, unknown> {
       result: {
         protocolVersion: "2024-11-05",
         capabilities: { tools: {} },
-        serverInfo: { name: "ku-parking", version: "1.0.0" },
+        serverInfo: { name: "ku-parking", version: "2.0.0" },
       },
     };
   }
@@ -445,17 +504,15 @@ const CORS_HEADERS = {
 };
 
 serve(async (req: Request) => {
-  // CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: CORS_HEADERS });
   }
 
-  // Simple GET -- health check / discovery
   if (req.method === "GET") {
     return new Response(
       JSON.stringify({
         server: "ku-parking",
-        version: "1.0.0",
+        version: "2.0.0",
         protocol: "mcp/jsonrpc-2.0",
         tools: TOOLS.map((t) => t.name),
         note: "POST JSON-RPC 2.0 requests here. See README for examples.",
@@ -467,7 +524,6 @@ serve(async (req: Request) => {
     );
   }
 
-  // POST -- MCP JSON-RPC requests
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });
   }
@@ -486,7 +542,6 @@ serve(async (req: Request) => {
     );
   }
 
-  // Support batch requests (an array of JSON-RPC requests)
   const responses = Array.isArray(body)
     ? body.map(handleMcpRequest)
     : handleMcpRequest(body);

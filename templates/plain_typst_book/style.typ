@@ -95,7 +95,7 @@
   // Code block styling: monospace text on a light-grey background, slightly
   // indented from the left margin. Inline code gets a softer grey pill.
   show raw.where(block: true): it => {
-    set text(font: "DejaVu Sans Mono", size: 9pt)
+    set text(font: ("DejaVu Sans Mono", "Liberation Mono", "Consolas", "Menlo"), size: 9pt)
     block(
       width: 100%,
       fill: rgb("#f5f5f5"),
@@ -113,7 +113,7 @@
       radius: 2pt,
       inset: (x: 3pt, y: 0pt),
       outset: (y: 3pt),
-      text(font: "DejaVu Sans Mono", size: 0.92em, it),
+      text(font: ("DejaVu Sans Mono", "Liberation Mono", "Consolas", "Menlo"), size: 0.92em, it),
     )
   }
 

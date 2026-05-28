@@ -41,7 +41,22 @@ jobs:
           BASE_URL: /AIHandsOnBook
         run: |
           myst build --html
-          myst build --pdf
+          # First PDF build downloads the plain_typst_book template into
+          # _build/templates/typst/myst/plain_typst_book/. We then overwrite
+          # its style.typ with our customized version (grey code blocks etc.)
+          # and force a rebuild so the customizations actually take effect.
+          myst build --pdf || true
+          TEMPLATE_DIR=_build/templates/typst/myst/plain_typst_book
+          if [ -d "$TEMPLATE_DIR" ]; then
+            echo "Patching $TEMPLATE_DIR/style.typ with local customization"
+            cp templates/plain_typst_book/style.typ "$TEMPLATE_DIR/style.typ"
+          else
+            echo "ERROR: expected template dir $TEMPLATE_DIR not found"
+            ls -R _build/templates || true
+            exit 1
+          fi
+          rm -f ai-for-business.pdf
+          myst build --pdf --force
           # Place the PDF inside the Pages artifact so it is served at
           # karanalytics.github.io/AIHandsOnBook/ai-for-business.pdf.
           cp ai-for-business.pdf _build/html/

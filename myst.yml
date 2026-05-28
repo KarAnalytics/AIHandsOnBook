@@ -9,9 +9,12 @@ project:
   github: KarAnalytics/AIHandsOnBook
   exports:
     - format: typst
-      template: ./templates/plain_typst_book
+      template: plain_typst_book
       output: ai-for-business.pdf
       justification: true
+      show_pagenumber: true
+      margin_left: 10
+      margin_right: 10
   toc:
     - file: intro.md
     - title: "How to Use This Book"

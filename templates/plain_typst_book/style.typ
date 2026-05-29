@@ -226,7 +226,7 @@
       align(center, text(weight: "bold", size: 26pt, fill: colorheadings, it.body))
       v(1.5em)
       if do_rollback {
-        counter(heading).update(c => (calc.max(0, c.at(0) - 1),))
+        counter(heading).update(c => calc.max(0, c - 1))
       }
     } else {
       v(2em)

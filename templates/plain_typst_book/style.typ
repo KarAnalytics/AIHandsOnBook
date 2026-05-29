@@ -52,47 +52,49 @@
   body
 ) = {
 
-  // Page background with the cover logo for the title page only. Reset
-  // before the TOC and main content.
+  // Cover-page-only styling: light-grey fill + faded cover logo as a backdrop.
+  // Reset before the TOC and main content.
   set page(
     numbering: none,
     paper-size,
+    fill: rgb("#f1f1f1"),
     background: if cover != none {
       place(center + horizon, image(cover, width: 80%))
     },
   )
 
-  // Chapter counter: independent from built-in heading counter so that
-  // unnumbered chapters (How to Use, Appendix) don't advance "Chapter N".
-  let chapter_counter = counter("chapter_counter")
+  // Unnumbered chapters: front-matter and back-matter sections that should
+  // not get a "Chapter N" label. Matched by substring against the heading body.
+  // intro.md's H1 starts with "AI for Business", so it's covered too.
   let unnumbered_titles = ("AI for Business", "How to Use This Book", "Appendix")
+  // For front-matter unnumbered chapters we roll back the built-in heading
+  // counter so AI at a Glance becomes Chapter 1. For Appendix we don't roll
+  // back, so its sub-sections (20.1 etc.) stay unique rather than colliding
+  // with Chapter 19's sub-sections.
+  let rollback_titles = ("AI for Business", "How to Use This Book")
 
-  // Disable built-in numbering for level 1 (we draw "Chapter N:" ourselves).
-  // For level 2+, prefix with the manual chapter counter so sub-sections
-  // read as "1.1", "1.2" etc. matching the printed "Chapter 1".
+  // Disable the built-in number on level-1 headings (we draw "Chapter N:"
+  // ourselves in the show rule). Sub-sections keep the default X.Y / X.Y.Z
+  // numbering from the built-in heading counter, which the rollback above
+  // keeps in sync with the displayed chapter number.
   set heading(numbering: (..args) => {
     let nums = args.pos()
     let level = nums.len()
     if level == 1 { none }
-    else {
-      context {
-        let ch = chapter_counter.get().at(0)
-        let sub = nums.slice(1).map(str).join(".")
-        [#ch.#sub]
-      }
-    }
+    else { numbering("1.1", ..nums) }
   })
 
-  // Figure and equation numbering use the manual chapter counter.
-  set figure(numbering: (..args) => context {
-    let ch = chapter_counter.get().at(0)
-    let fig = counter(figure).get().at(0)
-    [#ch.#fig]
+  // Figure and equation numbering use the built-in heading counter for the
+  // chapter prefix (matching what the chapter heading displays after rollback).
+  set figure(numbering: (..args) => {
+    let chapter = counter(heading).display((..nums) => str(nums.pos().at(0)))
+    let fig = counter(figure).display("1")
+    [#chapter.#fig]
   })
 
-  set math.equation(numbering: (..args) => context {
-    let ch = chapter_counter.get().at(0)
-    [(#ch.#numbering("1)", ..args.pos()))]
+  set math.equation(numbering: (..args) => {
+    let chapter = counter(heading).display((..nums) => str(nums.pos().at(0)))
+    [(#chapter.#numbering("1)", ..args.pos()))]
   })
   show math.equation: set block(spacing: 1em)
 
@@ -126,8 +128,14 @@
     )
   }
 
-// COVERPAGE — title at top, faded logo background (via set page), author at bottom.
-  v(12%)
+// COVERPAGE — "First Edition" in the top-right corner, title centered up top,
+// faded logo as page backdrop (set via the page above), author name centered
+// at the bottom with the KU profile link.
+  place(top + right, dx: -0.5cm, dy: 0.5cm,
+    text(11pt, weight: "bold", tracking: 1pt, fill: theme, "FIRST EDITION")
+  )
+
+  v(15%)
   align(center, text(34pt, weight: "bold", fill: theme, title))
   if subtitle != none {
     v(0.5em)
@@ -140,26 +148,19 @@
 
   if authors != none {
     align(center, [
-      #text(13pt, fill: gray.darken(40%))[A book by]
-      #linebreak()
-      #v(0.4em)
-      // Override link color for author so it picks up theme red instead of blue.
       #show link: set text(fill: theme, weight: "bold")
       #link("https://business.ku.edu/people/karthik-srinivasan")[
         #text(22pt, authors)
       ]
-      #linebreak()
-      #v(0.3em)
-      #text(11pt, fill: gray.darken(30%))[University of Kansas School of Business]
     ])
-    v(2cm)
+    v(2.5cm)
   }
 
 
 // PREFACE
   if preface != none {
     pagebreak()
-    set page(background: none)
+    set page(background: none, fill: white)
     place(top + left,
       text(14pt, fill: theme, "Preface")
     )
@@ -169,14 +170,15 @@
   }
 
 
-// OUTLINE OF THE BOOK — reset background before ToC.
+// OUTLINE OF THE BOOK — reset background and fill before TOC.
   pagebreak()
-  set page(background: none)
+  set page(background: none, fill: white)
   if show_ToC == true {
 
-    // Customize level-1 entries so they read like the printed headings:
-    // "Chapter N: Title  ...........  page" for numbered chapters,
-    // just the title for unnumbered ones.
+    // Custom level-1 outline entries: "Chapter N: Title  ..  page" for numbered
+    // chapters, just the title for unnumbered ones. Sub-section entries use
+    // the default outline rendering, which picks up the X.Y numbering from
+    // set heading(numbering: ...) above.
     show outline.entry.where(level: 1): it => context {
       let body_text = repr(it.element.body)
       let is_unnumbered = unnumbered_titles.any(t => body_text.contains(t))
@@ -189,7 +191,7 @@
           #it.page()
         ]
       } else {
-        let ch_num = chapter_counter.at(it.element.location()).at(0)
+        let ch_num = counter(heading).at(it.element.location()).at(0)
         link(it.element.location())[
           #strong[Chapter #ch_num: #it.element.body]
           #box(width: 1fr, repeat[.])
@@ -206,7 +208,9 @@
   }
 
 // CHAPTER HEADINGS — centered "Chapter N: Title" for numbered chapters,
-// just the centered title for unnumbered ones. Pagebreak before each.
+// just the centered title for unnumbered ones. Roll back the built-in heading
+// counter after front-matter unnumbered chapters so the next chapter starts
+// at the correct number.
   show heading.where(level: 1): it => {
     pagebreak()
     counter(figure).update(0)
@@ -215,16 +219,19 @@
 
     let body_text = repr(it.body)
     let is_unnumbered = unnumbered_titles.any(t => body_text.contains(t))
+    let do_rollback = rollback_titles.any(t => body_text.contains(t))
 
     if is_unnumbered {
       v(2em)
       align(center, text(weight: "bold", size: 26pt, fill: colorheadings, it.body))
       v(1.5em)
+      if do_rollback {
+        counter(heading).update(c => (calc.max(0, c.at(0) - 1),))
+      }
     } else {
-      chapter_counter.step()
       v(2em)
       align(center, context [
-        #text(size: 16pt, fill: theme)[Chapter #chapter_counter.get().at(0)]
+        #text(size: 16pt, fill: theme)[Chapter #counter(heading).get().at(0)]
         #linebreak()
         #v(0.4em)
         #text(weight: "bold", size: 26pt, fill: colorheadings, it.body)
@@ -247,6 +254,7 @@
     ),
     header: if logo != none { align(center)[#image(logo, width: logo_width)] } else { none },
     background: none,
+    fill: white,
   )
 
   set text(

@@ -52,18 +52,14 @@
   body
 ) = {
 
-  // Page background with faded cover logo for the title page only.
-  // The white overlay (rgb alpha ~210) fades the logo so title/author overlay
-  // is legible. The background is reset before TOC.
+  // Page background with the cover logo for the title page only. Reset
+  // before the TOC and main content.
   set page(
     numbering: none,
     paper-size,
     background: if cover != none {
-      [
-        #place(center + horizon, image(cover, width: 95%))
-        #place(top + left, rect(width: 100%, height: 100%, fill: rgb(255, 255, 255, 210), stroke: none))
-      ]
-    } else { none },
+      place(center + horizon, image(cover, width: 80%))
+    },
   )
 
   // Chapter counter: independent from built-in heading counter so that
@@ -190,14 +186,14 @@
         link(it.element.location())[
           #strong[#it.element.body]
           #box(width: 1fr, repeat[.])
-          #it.page
+          #it.page()
         ]
       } else {
         let ch_num = chapter_counter.at(it.element.location()).at(0)
         link(it.element.location())[
           #strong[Chapter #ch_num: #it.element.body]
           #box(width: 1fr, repeat[.])
-          #it.page
+          #it.page()
         ]
       }
     }

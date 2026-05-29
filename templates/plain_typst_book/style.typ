@@ -65,7 +65,7 @@
   // Chapter counter: independent from built-in heading counter so that
   // unnumbered chapters (How to Use, Appendix) don't advance "Chapter N".
   let chapter_counter = counter("chapter_counter")
-  let unnumbered_titles = ("How to Use This Book", "Appendix")
+  let unnumbered_titles = ("AI for Business", "How to Use This Book", "Appendix")
 
   // Disable built-in numbering for level 1 (we draw "Chapter N:" ourselves).
   // For level 2+, prefix with the manual chapter counter so sub-sections

@@ -15,16 +15,14 @@ project:
       show_pagenumber: true
       margin_left: 10
       margin_right: 10
-  toc:
-    - file: intro.md
-    - title: "How to Use This Book"
-      children:
+      cover: logo.png
+      cover_width: 10
+      coverposition: 2
+      # PDF-specific article list — skips intro.md (website welcome page) and
+      # uses bare file entries so each file's own H1 is the chapter title.
+      articles:
         - file: chapters/how-to-use/intro.md
-    - title: "Ch 1: AI at a Glance"
-      children:
         - file: chapters/ai-at-a-glance/intro.md
-    - title: "Ch 2: LLM Foundations"
-      children:
         - file: chapters/llm-foundations/intro.md
           children:
             - file: chapters/llm-foundations/tokenizer_examples.ipynb
@@ -33,35 +31,21 @@ project:
             - file: chapters/llm-foundations/attention_example.ipynb
             - file: chapters/llm-foundations/simple_transformers.ipynb
             - file: chapters/llm-foundations/attention_image_analysis.ipynb
-    - title: "Ch 3: Prompt Engineering"
-      children:
         - file: chapters/prompt-engineering/intro.md
-    - title: "Ch 4: Setting Up API Keys"
-      children:
         - file: chapters/api-keys/api_keys.md
-    - title: "Ch 5: LLM Providers and Fallback"
-      children:
         - file: chapters/llm-providers/intro.md
           children:
             - file: chapters/llm-providers/llm_cascade.md
             - file: chapters/llm-providers/openai_api.ipynb
             - file: chapters/llm-providers/google_api.ipynb
             - file: chapters/llm-providers/groq_api.ipynb
-    - title: "Ch 6: Local LLMs"
-      children:
         - file: chapters/local-llms/intro.md
           children:
             - file: chapters/local-llms/lm_studio.ipynb
-    - title: "Ch 7: Vibe Coding"
-      children:
         - file: chapters/vibe-coding/intro.md
-    - title: "Ch 8: RAG from First Principles"
-      children:
         - file: chapters/rag-first-principles/intro.md
           children:
             - file: chapters/rag-first-principles/rag_first_principles.ipynb
-    - title: "Ch 9: RAG with Vector Databases"
-      children:
         - file: chapters/rag-vector-databases/intro.md
           children:
             - file: chapters/rag-vector-databases/rag_countries_chromadb.ipynb
@@ -69,64 +53,122 @@ project:
             - file: chapters/rag-vector-databases/rag_featherweight.ipynb
             - file: chapters/rag-vector-databases/lancedb.ipynb
             - file: chapters/rag-vector-databases/pinecone.ipynb
-    - title: "Ch 10: RAG with Structured Data"
-      children:
         - file: chapters/rag-structured-data/intro.md
           children:
             - file: chapters/rag-structured-data/dbms_rag_sqlite.ipynb
             - file: chapters/rag-structured-data/graph_rag_trade.ipynb
-    - title: "Ch 11: RAG with Images and Video"
-      children:
         - file: chapters/rag-multimedia/intro.md
           children:
             - file: chapters/rag-multimedia/image_rag.ipynb
             - file: chapters/rag-multimedia/video_rag.ipynb
-    - title: "Ch 12: LlamaIndex"
-      children:
         - file: chapters/llamaindex/intro.md
           children:
             - file: chapters/llamaindex/llamaindex_rag.ipynb
             - file: chapters/llamaindex/llamaindex_simple.ipynb
-    - title: "Ch 13: LangChain"
-      children:
         - file: chapters/langchain/intro.md
           children:
             - file: chapters/langchain/langchain_demo.ipynb
-    - title: "Ch 14: LangGraph"
-      children:
         - file: chapters/langgraph/intro.md
           children:
             - file: chapters/langgraph/langgraph_demo.ipynb
-    - title: "Ch 15: Fine-Tuning with QLoRA"
-      children:
         - file: chapters/finetuning/intro.md
           children:
             - file: chapters/finetuning/qlora_finetuning.ipynb
-    - title: "Ch 16: Agentic Systems"
-      children:
         - file: chapters/agentic-systems/intro.md
           children:
             - file: chapters/agentic-systems/multi_agent_multi_human_db.ipynb
             - file: chapters/agentic-systems/multi_agent_single_input.ipynb
             - file: chapters/agentic-systems/single_agent_db.ipynb
-    - title: "Ch 17: Autonomous Agents"
-      children:
         - file: chapters/autonomous-agents/intro.md
           children:
             - file: chapters/autonomous-agents/autonomous_agent.ipynb
             - file: chapters/autonomous-agents/autonomous_multivendor.ipynb
-    - title: "Ch 18: Tool-Using Agents and MCP"
-      children:
         - file: chapters/tool-agents-mcp/intro.md
           children:
             - file: chapters/tool-agents-mcp/ku_parking_assistant.ipynb
             - file: chapters/tool-agents-mcp/ku_parking_mcp.ipynb
-    - title: "Ch 19: Deployment and No-Code"
-      children:
         - file: chapters/deployment/intro.md
           children:
             - file: chapters/deployment/mcp_cloudrun.md
             - file: chapters/deployment/dify_workflow.md
+        - title: Appendix
+          children:
+            - file: chapters/appendix/learning_path.md
+            - file: chapters/appendix/glossary.md
+            - file: chapters/appendix/common_errors.md
+            - file: chapters/appendix/project_ideas.md
+  toc:
+    - file: intro.md
+    - file: chapters/how-to-use/intro.md
+    - file: chapters/ai-at-a-glance/intro.md
+    - file: chapters/llm-foundations/intro.md
+      children:
+        - file: chapters/llm-foundations/tokenizer_examples.ipynb
+        - file: chapters/llm-foundations/embedding_example.ipynb
+        - file: chapters/llm-foundations/tfidf_example.ipynb
+        - file: chapters/llm-foundations/attention_example.ipynb
+        - file: chapters/llm-foundations/simple_transformers.ipynb
+        - file: chapters/llm-foundations/attention_image_analysis.ipynb
+    - file: chapters/prompt-engineering/intro.md
+    - file: chapters/api-keys/api_keys.md
+    - file: chapters/llm-providers/intro.md
+      children:
+        - file: chapters/llm-providers/llm_cascade.md
+        - file: chapters/llm-providers/openai_api.ipynb
+        - file: chapters/llm-providers/google_api.ipynb
+        - file: chapters/llm-providers/groq_api.ipynb
+    - file: chapters/local-llms/intro.md
+      children:
+        - file: chapters/local-llms/lm_studio.ipynb
+    - file: chapters/vibe-coding/intro.md
+    - file: chapters/rag-first-principles/intro.md
+      children:
+        - file: chapters/rag-first-principles/rag_first_principles.ipynb
+    - file: chapters/rag-vector-databases/intro.md
+      children:
+        - file: chapters/rag-vector-databases/rag_countries_chromadb.ipynb
+        - file: chapters/rag-vector-databases/rag_allcountries_chromadb.ipynb
+        - file: chapters/rag-vector-databases/rag_featherweight.ipynb
+        - file: chapters/rag-vector-databases/lancedb.ipynb
+        - file: chapters/rag-vector-databases/pinecone.ipynb
+    - file: chapters/rag-structured-data/intro.md
+      children:
+        - file: chapters/rag-structured-data/dbms_rag_sqlite.ipynb
+        - file: chapters/rag-structured-data/graph_rag_trade.ipynb
+    - file: chapters/rag-multimedia/intro.md
+      children:
+        - file: chapters/rag-multimedia/image_rag.ipynb
+        - file: chapters/rag-multimedia/video_rag.ipynb
+    - file: chapters/llamaindex/intro.md
+      children:
+        - file: chapters/llamaindex/llamaindex_rag.ipynb
+        - file: chapters/llamaindex/llamaindex_simple.ipynb
+    - file: chapters/langchain/intro.md
+      children:
+        - file: chapters/langchain/langchain_demo.ipynb
+    - file: chapters/langgraph/intro.md
+      children:
+        - file: chapters/langgraph/langgraph_demo.ipynb
+    - file: chapters/finetuning/intro.md
+      children:
+        - file: chapters/finetuning/qlora_finetuning.ipynb
+    - file: chapters/agentic-systems/intro.md
+      children:
+        - file: chapters/agentic-systems/multi_agent_multi_human_db.ipynb
+        - file: chapters/agentic-systems/multi_agent_single_input.ipynb
+        - file: chapters/agentic-systems/single_agent_db.ipynb
+    - file: chapters/autonomous-agents/intro.md
+      children:
+        - file: chapters/autonomous-agents/autonomous_agent.ipynb
+        - file: chapters/autonomous-agents/autonomous_multivendor.ipynb
+    - file: chapters/tool-agents-mcp/intro.md
+      children:
+        - file: chapters/tool-agents-mcp/ku_parking_assistant.ipynb
+        - file: chapters/tool-agents-mcp/ku_parking_mcp.ipynb
+    - file: chapters/deployment/intro.md
+      children:
+        - file: chapters/deployment/mcp_cloudrun.md
+        - file: chapters/deployment/dify_workflow.md
     - title: Appendix
       children:
         - file: chapters/appendix/learning_path.md

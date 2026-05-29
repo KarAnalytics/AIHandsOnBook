@@ -4,7 +4,6 @@
   set align(left)
   set par(justify: true)
 
-  // Within the context of the element, you may use the counter
   context(it, {
     text(weight: "bold")[#it.supplement #it.counter.display(it.numbering).]
   })
@@ -20,7 +19,7 @@
   title: "Book Title",
   subtitle: none,
   authors: "Your name",
-  cover: none,            // <— path to cover "images/cover.png"
+  cover: none,
   cover_width: 12cm,
   coverposition: 1cm,
   justification: false,
@@ -33,7 +32,7 @@
   preface: none,
 
   // SPECIFICATION of output
-  paper-size: "a4",       // https://typst.app/docs/reference/layout/page/#parameters-paper
+  paper-size: "a4",
   margin: (),
   linespacing: .5em,
   show_pagenumber: false,
@@ -50,50 +49,64 @@
   theme: red.darken(30%),
   colorheadings: black,
 
-  // The book's content.
   body
 ) = {
 
+  // Page background with faded cover logo for the title page only.
+  // The white overlay (rgb alpha ~210) fades the logo so title/author overlay
+  // is legible. The background is reset before TOC.
   set page(
     numbering: none,
     paper-size,
-    ) //numbering off until first chapter
+    background: if cover != none {
+      [
+        #place(center + horizon, image(cover, width: 95%))
+        #place(top + left, rect(width: 100%, height: 100%, fill: rgb(255, 255, 255, 210), stroke: none))
+      ]
+    } else { none },
+  )
 
+  // Chapter counter: independent from built-in heading counter so that
+  // unnumbered chapters (How to Use, Appendix) don't advance "Chapter N".
+  let chapter_counter = counter("chapter_counter")
+  let unnumbered_titles = ("How to Use This Book", "Appendix")
+
+  // Disable built-in numbering for level 1 (we draw "Chapter N:" ourselves).
+  // For level 2+, prefix with the manual chapter counter so sub-sections
+  // read as "1.1", "1.2" etc. matching the printed "Chapter 1".
   set heading(numbering: (..args) => {
     let nums = args.pos()
     let level = nums.len()
-    if level == 1 {[#numbering("1.", ..nums)]} else {[#numbering("1.1.1", ..nums)]}
-    },
-
-)
-
-  // Set figure numbering to x.y where x is chapter number and y is figure number within chapter
-
-  set figure(numbering: (..args) => {
-    // get current chapter number (first level of heading)
-    let chapter = counter(heading).display((..nums) => nums.pos().at(0)) // nums is array of all levels, at(0) is first level, display formats it.
-    let fig = counter(figure).display("1")    // counter counts, display formats it
-    [#chapter.#fig]
+    if level == 1 { none }
+    else {
+      context {
+        let ch = chapter_counter.get().at(0)
+        let sub = nums.slice(1).map(str).join(".")
+        [#ch.#sub]
+      }
+    }
   })
 
+  // Figure and equation numbering use the manual chapter counter.
+  set figure(numbering: (..args) => context {
+    let ch = chapter_counter.get().at(0)
+    let fig = counter(figure).get().at(0)
+    [#ch.#fig]
+  })
 
-  // Configure equation numbering and spacing.
-  set math.equation(numbering: (..args) => {
-    let chapter = counter(heading).display((..nums) => nums.pos().at(0))
-    [(#chapter.#numbering("1)", ..args.pos())]
+  set math.equation(numbering: (..args) => context {
+    let ch = chapter_counter.get().at(0)
+    [(#ch.#numbering("1)", ..args.pos()))]
   })
   show math.equation: set block(spacing: 1em)
 
 
-  // Configure lists.
   set enum(indent: 10pt, body-indent: 9pt)
   set list(indent: 10pt, body-indent: 9pt)
 
-  // link behaviour
-  show link: set text( fill: blue.darken(30%))
+  show link: set text(fill: blue.darken(30%))
 
-  // Code block styling: monospace text on a light-grey background, slightly
-  // indented from the left margin. Inline code gets a softer grey pill.
+  // Code blocks: light-grey fill, monospace, left rule, slight indent.
   show raw.where(block: true): it => {
     set text(font: ("DejaVu Sans Mono", "Liberation Mono", "Consolas", "Menlo"), size: 9pt)
     block(
@@ -117,99 +130,139 @@
     )
   }
 
-// COVERPAGE
-  // Title, subtitle,
-  align(center, text(17pt, weight: "bold", fill: theme, title))
+// COVERPAGE — title at top, faded logo background (via set page), author at bottom.
+  v(12%)
+  align(center, text(34pt, weight: "bold", fill: theme, title))
   if subtitle != none {
-    parbreak()
-    box(text(14pt, fill: gray.darken(30%), subtitle))
+    v(0.5em)
+    align(center, text(16pt, fill: gray.darken(30%), subtitle))
   }
+  v(0.6em)
+  align(center, line(length: 30%, stroke: 1pt + theme))
 
-    if cover != none {
-      v(coverposition)
-      align(center, image((cover), width: cover_width))
-    }
+  v(1fr)
 
-  //author
-  v(1em)
-
-  // authors in gray
   if authors != none {
-  place(bottom + right,
-    text(12pt, fill: gray.darken(50%), authors)
-  )
-
+    align(center, [
+      #text(13pt, fill: gray.darken(40%))[A book by]
+      #linebreak()
+      #v(0.4em)
+      // Override link color for author so it picks up theme red instead of blue.
+      #show link: set text(fill: theme, weight: "bold")
+      #link("https://business.ku.edu/people/karthik-srinivasan")[
+        #text(22pt, authors)
+      ]
+      #linebreak()
+      #v(0.3em)
+      #text(11pt, fill: gray.darken(30%))[University of Kansas School of Business]
+    ])
+    v(2cm)
   }
 
 
-// PREFACE,
+// PREFACE
   if preface != none {
     pagebreak()
+    set page(background: none)
     place(top + left,
       text(14pt, fill: theme, "Preface")
     )
     v(1em)
     set par(justify: true)
-    align(center, box(width: 70%, text(11pt, overhang: true, font:  "New Computer Modern", fill: gray.darken(30%), preface)))
+    align(center, box(width: 70%, text(11pt, overhang: true, font: "New Computer Modern", fill: gray.darken(30%), preface)))
   }
 
 
-//OUTLINE OF THE BOOK
+// OUTLINE OF THE BOOK — reset background before ToC.
   pagebreak()
+  set page(background: none)
   if show_ToC == true {
 
-    show outline.entry.where(level: 1): it => {
-      v(12pt, weak: true)
+    // Customize level-1 entries so they read like the printed headings:
+    // "Chapter N: Title  ...........  page" for numbered chapters,
+    // just the title for unnumbered ones.
+    show outline.entry.where(level: 1): it => context {
+      let body_text = repr(it.element.body)
+      let is_unnumbered = unnumbered_titles.any(t => body_text.contains(t))
 
-      strong(it)
+      v(12pt, weak: true)
+      if is_unnumbered {
+        link(it.element.location())[
+          #strong[#it.element.body]
+          #box(width: 1fr, repeat[.])
+          #it.page
+        ]
+      } else {
+        let ch_num = chapter_counter.at(it.element.location()).at(0)
+        link(it.element.location())[
+          #strong[Chapter #ch_num: #it.element.body]
+          #box(width: 1fr, repeat[.])
+          #it.page
+        ]
+      }
     }
-    // setting outline in themecolor
     outline(
-    title: strong(text(fill: theme, "Contents")),
-    depth: ToC_depth,
-    indent: auto,
-  )
+      title: strong(text(fill: theme, "Contents")),
+      depth: ToC_depth,
+      indent: auto,
+    )
 
   }
 
-//RESETING NUMBERING
+// CHAPTER HEADINGS — centered "Chapter N: Title" for numbered chapters,
+// just the centered title for unnumbered ones. Pagebreak before each.
   show heading.where(level: 1): it => {
     pagebreak()
-    // Reset all counters with a new chapter
-    counter(figure).update(0)                // all figures (irrespective of kind)
-    counter(figure.where(kind: table)).update(0) // specific for tables
+    counter(figure).update(0)
+    counter(figure.where(kind: table)).update(0)
     counter(math.equation).update(0)
 
-    it
+    let body_text = repr(it.body)
+    let is_unnumbered = unnumbered_titles.any(t => body_text.contains(t))
+
+    if is_unnumbered {
+      v(2em)
+      align(center, text(weight: "bold", size: 26pt, fill: colorheadings, it.body))
+      v(1.5em)
+    } else {
+      chapter_counter.step()
+      v(2em)
+      align(center, context [
+        #text(size: 16pt, fill: theme)[Chapter #chapter_counter.get().at(0)]
+        #linebreak()
+        #v(0.4em)
+        #text(weight: "bold", size: 26pt, fill: colorheadings, it.body)
+      ])
+      v(1.5em)
+    }
   }
 
-  //Heading colors
   show heading: set text(colorheadings)
 
 
 // PAGE LAYOUT OF CONTENT
   set page(
-    numbering: if show_pagenumber == true {"1"} else {none},         //turn on numbering
+    numbering: if show_pagenumber == true {"1"} else {none},
     margin: (
       top: margin_top,
       bottom: margin_bottom,
       left: margin_left,
       right: margin_right
-      ),    //set left margin
-    header: if logo != none { align(center)[#image(logo, width: logo_width)] } else { none },//include logo
+    ),
+    header: if logo != none { align(center)[#image(logo, width: logo_width)] } else { none },
+    background: none,
   )
 
   set text(
     font: font,
     size: fontsize
-    )
+  )
   set par(
     leading: linespacing,
     justify: justification
-    )
+  )
 
-  counter(page).update(1)   //set number to 1
+  counter(page).update(1)
 
-  // Display the book's contents.
   [#body]
 }

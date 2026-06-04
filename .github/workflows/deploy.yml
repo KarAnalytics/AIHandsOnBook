@@ -61,6 +61,21 @@ jobs:
           # karanalytics.github.io/AIHandsOnBook/ai-for-business.pdf.
           cp ai-for-business.pdf _build/html/
 
+      - name: Inject GoatCounter analytics
+        # Done AFTER `myst build` so MyST never sees these tags: MyST strips
+        # <script> from page content and "localizes" (freezes) external <img>
+        # at build time -- which is exactly why the old visitor badge got stuck.
+        # Injecting into the already-built HTML keeps both pieces live.
+        run: |
+          # 1. Tracking: count every page view. Inserted just before </head>.
+          GC_SCRIPT='<script data-goatcounter="https://karanalytics.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>'
+          find _build/html -name '*.html' -exec sed -i "s#</head>#${GC_SCRIPT}</head>#" {} +
+          # 2. Visible counter: swap the placeholder token on the intro page for
+          #    GoatCounter's live total-visitor SVG (re-fetched by the browser on
+          #    every load, so it always shows the current count).
+          GC_COUNTER='<img src="https://karanalytics.goatcounter.com/counter/TOTAL.svg" alt="Total visitors" style="vertical-align:middle">'
+          find _build/html -name '*.html' -exec sed -i "s#GOATCOUNTER_VISITOR_COUNTER#${GC_COUNTER}#g" {} +
+
       - uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact

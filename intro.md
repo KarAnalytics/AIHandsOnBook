@@ -13,9 +13,7 @@ Welcome to this interactive, hands-on guide to building AI-powered applications 
 ```
 ```{image} https://img.shields.io/badge/License-MIT-green
 ```
-```{image} https://visitor-badge.laobi.icu/badge?page_id=KarAnalytics.AIHandsOnBook&left_color=gray&right_color=brightgreen&left_text=Visitors
-:alt: Visitors
-```
+**👥 Visitors:** GOATCOUNTER_VISITOR_COUNTER
 
 This book takes you from zero to deploying AI applications, organized into six parts:
 

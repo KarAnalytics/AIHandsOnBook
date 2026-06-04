@@ -13,7 +13,6 @@ Welcome to this interactive, hands-on guide to building AI-powered applications 
 ```
 ```{image} https://img.shields.io/badge/License-MIT-green
 ```
-👥 GOATCOUNTER_VISITOR_COUNTER
 
 This book takes you from zero to deploying AI applications, organized into six parts:
 

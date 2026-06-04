@@ -71,11 +71,10 @@ jobs:
           # 1. Tracking: count every page view. Inserted just before </head>.
           GC_SCRIPT='<script data-goatcounter="https://karanalytics.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>'
           find _build/html -name '*.html' -exec sed -i "s#</head>#${GC_SCRIPT}</head>#" {} +
-          # 2. Visible counter: ship a small client script that swaps the
-          #    GOATCOUNTER_VISITOR_COUNTER text token (left as plain text in the
-          #    intro page) for GoatCounter's live total-visitor SVG, in the DOM,
-          #    after MyST renders. Loaded as an external file so it can't corrupt
-          #    the page JSON the way an inline replacement did.
+          # 2. Visible counter: ship a small client script that appends a
+          #    discreet fixed footer line with GoatCounter's live unique-visitor
+          #    count. It adds its own element (one React never rendered) instead
+          #    of editing page content, so React hydration leaves it alone.
           cp assets/gc-counter.js _build/html/gc-counter.js
           find _build/html -name '*.html' -exec sed -i 's|</body>|<script src="/AIHandsOnBook/gc-counter.js"></script></body>|' {} +
 

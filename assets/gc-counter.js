@@ -7,10 +7,14 @@
 //
 // We fetch GoatCounter's JSON count endpoint (CORS-enabled) and write the number
 // as ordinary text -- e.g. "1,234 visitors" -- so it inherits the surrounding
-// typography. A one-shot replace gets clobbered when React hydrates and restores
-// the token, so a MutationObserver re-applies it whenever the token (re)appears
-// (initial hydration and SPA navigation). Once the token is gone there is
-// nothing to do, so it settles instead of looping.
+// typography.
+//
+// The hard part is that React keeps restoring the token: it hydrates AFTER this
+// script runs, and may revert our swap either by re-adding nodes (childList) or
+// by rewriting the existing text node (characterData). So we (a) observe BOTH
+// kinds of mutation, and (b) re-apply on a short poll for a few seconds so the
+// last write after hydration settles is always ours. Once the token is gone
+// there is nothing to swap, so it costs nothing.
 (function () {
   var TOKEN = "GOATCOUNTER_VISITOR_COUNTER";
   var URL = "https://karanalytics.goatcounter.com/counter/TOTAL.json";
@@ -61,9 +65,10 @@
     ensureCount();
   }
 
-  // Walk a subtree and swap any text node containing the token.
+  // Walk a subtree and swap any text node containing the token. Returns true if
+  // at least one swap happened.
   function swap(root) {
-    if (!root || root.nodeType !== 1) return;
+    if (!root || root.nodeType !== 1) return false;
     var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
     var hits = [];
     var node;
@@ -71,34 +76,35 @@
       if (node.nodeValue && node.nodeValue.indexOf(TOKEN) !== -1) hits.push(node);
     }
     for (var i = 0; i < hits.length; i++) swapTextNode(hits[i]);
+    return hits.length > 0;
   }
 
   function run() {
     try {
-      swap(document.body);
+      return swap(document.body);
     } catch (e) {
-      /* never let this break the page */
+      return false; // never let this break the page
     }
   }
 
-  // Initial attempts (token may already be present, or arrive on load).
+  // Initial attempt (token may already be present in the server-rendered HTML).
   run();
-  if (document.readyState !== "complete") window.addEventListener("load", run);
 
-  // Re-apply on any content (re)render. We only inspect newly-added nodes, so
-  // this stays cheap and our own span insertions don't retrigger work.
-  var obs = new MutationObserver(function (records) {
-    for (var r = 0; r < records.length; r++) {
-      var added = records[r].addedNodes;
-      for (var i = 0; i < added.length; i++) {
-        var n = added[i];
-        if (n.nodeType === 3) {
-          if (n.nodeValue && n.nodeValue.indexOf(TOKEN) !== -1) swapTextNode(n);
-        } else if (n.nodeType === 1) {
-          swap(n);
-        }
-      }
-    }
+  // Bounded poll: re-apply for a few seconds so we win the last write once React
+  // finishes hydrating. Cheap when there's nothing to do; stops after the window.
+  var ticks = 0;
+  var poll = setInterval(function () {
+    run();
+    if (++ticks > 40) clearInterval(poll); // ~10s at 250ms
+  }, 250);
+
+  // Keep handling later re-renders (e.g. single-page navigation between
+  // chapters) for the life of the page. Observe node additions AND text
+  // rewrites, since React can restore the token either way.
+  var obs = new MutationObserver(function () { run(); });
+  obs.observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true,
   });
-  obs.observe(document.body, { childList: true, subtree: true });
 })();

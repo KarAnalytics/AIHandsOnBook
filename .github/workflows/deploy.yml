@@ -60,6 +60,23 @@ jobs:
           # Place the PDF inside the Pages artifact so it is served at
           # karanalytics.github.io/AIHandsOnBook/ai-for-business.pdf.
           cp ai-for-business.pdf _build/html/
+          # Google Search Console site-verification file: must be served
+          # as-is at karanalytics.github.io/AIHandsOnBook/<file>.html.
+          cp google7b998685ffd7e948.html _build/html/
+
+      - name: Fix canonical site URL for SEO
+        # MyST bakes a "domain" into every page's hydration JSON (used for
+        # canonical links, og:url, sitemap.xml and robots.txt). We haven't
+        # found a myst.yml field that sets this for a plain GitHub Pages
+        # deploy, so it defaults to the dev-server host. Left alone, Google
+        # sees every page's canonical URL as http://localhost:3000/... and
+        # the submitted sitemap points at a host it can't crawl. Rewrite the
+        # host here, same post-build patch approach as GoatCounter below.
+        # BASE_URL above already bakes the /AIHandsOnBook path prefix into
+        # each link, so only the scheme+host needs replacing.
+        run: |
+          find _build/html -type f \( -name '*.html' -o -name '*.json' -o -name '*.xml' -o -name '*.txt' \) \
+            -exec sed -i 's#http://localhost:3000#https://karanalytics.github.io#g' {} +
 
       - name: Inject GoatCounter analytics
         # Done AFTER `myst build` so MyST never sees these tags: MyST strips

@@ -43,13 +43,18 @@ jobs:
           myst build --html
           # First PDF build downloads the plain_typst_book template into
           # _build/templates/typst/myst/plain_typst_book/. We then overwrite
-          # its style.typ with our customized version (grey code blocks etc.)
-          # and force a rebuild so the customizations actually take effect.
+          # it with our customized style.typ (grey code blocks etc.),
+          # template.typ (passes our custom options like affiliation through
+          # to style.typ) and template.yml (declares those custom options so
+          # jtex doesn't drop them as unrecognized), then force a rebuild so
+          # the customizations actually take effect.
           myst build --pdf || true
           TEMPLATE_DIR=_build/templates/typst/myst/plain_typst_book
           if [ -d "$TEMPLATE_DIR" ]; then
-            echo "Patching $TEMPLATE_DIR/style.typ with local customization"
+            echo "Patching $TEMPLATE_DIR with local customizations"
             cp templates/plain_typst_book/style.typ "$TEMPLATE_DIR/style.typ"
+            cp templates/plain_typst_book/template.typ "$TEMPLATE_DIR/template.typ"
+            cp templates/plain_typst_book/template.yml "$TEMPLATE_DIR/template.yml"
           else
             echo "ERROR: expected template dir $TEMPLATE_DIR not found"
             ls -R _build/templates || true

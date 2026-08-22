@@ -118,7 +118,9 @@ options:
     description: a preface which is not included online
 
 # affiliation shown under the author's name on the cover page
-  - id: affiliation
+  # (named cover_affiliation, not affiliation -- "affiliation" collides with
+  # a reserved export/frontmatter property name and jtex rejects it)
+  - id: cover_affiliation
     type: string
     description: organization/institution shown under the author name on the cover
 

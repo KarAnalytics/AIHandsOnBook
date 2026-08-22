@@ -13,7 +13,7 @@ project:
       output: ai-for-business.pdf
       justification: true
       show_pagenumber: true
-      affiliation: University of Kansas School of Business
+      cover_affiliation: University of Kansas School of Business
       margin_left: 10
       margin_right: 10
       cover: logo.png

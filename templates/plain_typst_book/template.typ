@@ -17,8 +17,8 @@
 [# endif #]
 
 // affiliation (shown under the author name on the cover)
-[# if options.affiliation #]
-  affiliation: "[-options.affiliation-]",
+[# if options.cover_affiliation #]
+  affiliation: "[-options.cover_affiliation-]",
 [# endif #]
 
 

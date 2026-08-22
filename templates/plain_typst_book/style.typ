@@ -19,6 +19,7 @@
   title: "Book Title",
   subtitle: none,
   authors: "Your name",
+  affiliation: none,
   cover: none,
   cover_width: 12cm,
   coverposition: 1cm,
@@ -164,6 +165,10 @@
         #text(22pt, authors)
       ]
     ])
+    if affiliation != none {
+      v(0.3em)
+      align(center, text(14pt, fill: gray.darken(30%), affiliation))
+    }
     v(2.5cm)
   }
 

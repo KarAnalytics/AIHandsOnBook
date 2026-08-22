@@ -117,4 +117,9 @@ options:
     type: string
     description: a preface which is not included online
 
+# affiliation shown under the author's name on the cover page
+  - id: affiliation
+    type: string
+    description: organization/institution shown under the author name on the cover
+
 parts: []

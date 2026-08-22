@@ -16,6 +16,11 @@
   authors: "[# for author in doc.authors #][- author.name -][# if not loop.last #], [# endif #][# endfor #]",
 [# endif #]
 
+// affiliation (shown under the author name on the cover)
+[# if options.affiliation #]
+  affiliation: "[-options.affiliation-]",
+[# endif #]
+
 
 // logo for top page
 [# if options.logo #]
